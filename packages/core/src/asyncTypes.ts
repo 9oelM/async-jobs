@@ -57,7 +57,7 @@ export enum JobActions {
   REMOVE = `REMOVE`,
 }
 
-export const ASYNC_JOBS_PREFIX = `@RA` as const
+export const ASYNC_JOBS_PREFIX = `@AJ` as const
 
 export type ActionTypeCreator<
   JobAction extends JobActions,
