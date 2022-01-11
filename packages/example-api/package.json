@@ -1,0 +1,16 @@
+{
+  "name": "@async-jobs/example-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "localdev": "vercel dev"
+  },
+  "keywords": [],
+  "author": "9oelM <hj923@hotmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@vercel/node": "^1.12.1",
+    "vercel": "^23.1.2"
+  }
+}

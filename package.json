@@ -16,6 +16,7 @@
     "lint:debug": "eslint . --debug",
     "lint:fix": "eslint . --fix",
     "core:dev": "npm run dev -w packages/core",
+    "core:package": "npm run package -w packages/core",
     "example-app:dev": "npm run dev -w packages/example-app",
     "start": "run-p core:dev example-app:dev"
   },
