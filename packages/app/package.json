@@ -1,8 +1,8 @@
 {
-  "name": "@myprojectname/root",
+  "name": "@async-jobs/root",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/9oelM/myprojectname.git",
+  "repository": "https://github.com/9oelM/async-jobs.git",
   "author": "9oelM <hj923@hotmail.com>",
   "license": "MIT",
   "private": false,
