@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid"
 
 // https://github.com/krzkaczor/ts-essentials/blob/53e73d56cccb8585a84c431e0c8558ed1f440dfe/lib/types.ts#L392
-export type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> &
+type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> &
   Required<Pick<T, RK>>
 
 export enum AsyncStatus {

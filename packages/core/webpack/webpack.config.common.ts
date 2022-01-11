@@ -1,9 +1,8 @@
 import path from "path"
 import webpack from "webpack"
-import HtmlWebpackPlugin from "html-webpack-plugin"
 
 export const commonConfig: webpack.Configuration = {
-  entry: `./src/index.tsx`,
+  entry: `./src/index.ts`,
   // https://webpack.js.org/plugins/split-chunks-plugin/
   optimization: {
     splitChunks: {
@@ -42,11 +41,6 @@ export const commonConfig: webpack.Configuration = {
   },
   output: {
     filename: `bundle.js`,
-    path: path.resolve(__dirname, `dist`),
+    path: path.resolve(__dirname, `..`, `dist`),
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, `..`, `public`, `index.html`),
-    }),
-  ],
 }
