@@ -5,8 +5,8 @@ import {
   asyncActionTypeCreator,
   GeneralJobActionCreator,
   JobActions,
-  CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType,
-  GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType,
+  CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType,
+  GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType,
 } from "./asyncTypes"
 
 /**
@@ -148,38 +148,38 @@ export function createJobSet<
 >(
   jobName: JobName
 ): {
-  create: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  create: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.CREATE,
     JobName,
     CreatePayload
   >
-  start: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  start: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.START,
     JobName,
     StartPayload
   >
-  succeed: GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  succeed: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.SUCCEED,
     JobName,
     SucceedPayload
   >
-  fail: GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  fail: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.FAIL,
     JobName,
     FailPayload
   >
-  cancel: GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  cancel: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.CANCEL,
     JobName,
     CancelPayload
   >
-  remove: GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  remove: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.REMOVE,
     JobName,
     RemovePayload
   >
 } {
-  const create: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  const create: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.CREATE,
     JobName,
     CreatePayload
@@ -188,12 +188,12 @@ export function createJobSet<
       ...paramsExceptName,
       name: jobName,
     })
-  create.__REDUX_ASYNC_TYPE__ = asyncActionTypeCreator(
+  create.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
     JobActions.CREATE,
     jobName
   )
 
-  const start: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  const start: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.START,
     JobName,
     StartPayload
@@ -202,9 +202,9 @@ export function createJobSet<
       ...paramsExceptName,
       name: jobName,
     })
-  start.__REDUX_ASYNC_TYPE__ = asyncActionTypeCreator(JobActions.START, jobName)
+  start.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(JobActions.START, jobName)
 
-  const succeed: GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  const succeed: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.SUCCEED,
     JobName,
     SucceedPayload
@@ -213,12 +213,12 @@ export function createJobSet<
       ...paramsExceptName,
       name: jobName,
     })
-  succeed.__REDUX_ASYNC_TYPE__ = asyncActionTypeCreator(
+  succeed.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
     JobActions.SUCCEED,
     jobName
   )
 
-  const fail: GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  const fail: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.FAIL,
     JobName,
     FailPayload
@@ -227,9 +227,9 @@ export function createJobSet<
       ...paramsExceptName,
       name: jobName,
     })
-  fail.__REDUX_ASYNC_TYPE__ = asyncActionTypeCreator(JobActions.FAIL, jobName)
+  fail.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(JobActions.FAIL, jobName)
 
-  const cancel: GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  const cancel: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.CANCEL,
     JobName,
     CancelPayload
@@ -238,12 +238,12 @@ export function createJobSet<
       ...paramsExceptName,
       name: jobName,
     })
-  cancel.__REDUX_ASYNC_TYPE__ = asyncActionTypeCreator(
+  cancel.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
     JobActions.CANCEL,
     jobName
   )
 
-  const remove: GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+  const remove: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
     JobActions.REMOVE,
     JobName,
     RemovePayload
@@ -252,7 +252,7 @@ export function createJobSet<
       ...paramsExceptName,
       name: jobName,
     })
-  remove.__REDUX_ASYNC_TYPE__ = asyncActionTypeCreator(
+  remove.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
     JobActions.REMOVE,
     jobName
   )

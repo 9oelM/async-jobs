@@ -1,16 +1,16 @@
 import { createJob, createJobSet, failJob } from "./asyncActions"
 import {
   asyncActionTypeCreator,
-  getReduxAsyncType,
+  getAsyncJobsType,
   isSpecificAsyncActionType,
   JobActions,
-  REDUX_ASYNC_PREFIX,
+  ASYNC_JOBS_PREFIX,
 } from "./asyncTypes"
 
 describe(`asyncActionTypeCreator`, () => {
   it(`produces expected combination of strings`, () => {
     expect(asyncActionTypeCreator(JobActions.START, `B`)).toEqual(
-      `${REDUX_ASYNC_PREFIX}/${JobActions.START}/B`
+      `${ASYNC_JOBS_PREFIX}/${JobActions.START}/B`
     )
   })
 })
@@ -66,7 +66,7 @@ describe(`isSpecificAsyncActionType`, () => {
   )
 })
 
-describe(`getReduxAsyncType`, () => {
+describe(`getAsyncJobsType`, () => {
   const exampleAsyncJob = createJobSet<`EXAMPLE`>(`EXAMPLE`)
 
   it.each([
@@ -76,9 +76,9 @@ describe(`getReduxAsyncType`, () => {
     exampleAsyncJob.remove,
     exampleAsyncJob.start,
     exampleAsyncJob.succeed,
-  ])(`should return __REDUX_ASYNC_TYPE__`, (actionCreator) => {
-    expect(getReduxAsyncType(actionCreator)).toEqual(
-      actionCreator.__REDUX_ASYNC_TYPE__
+  ])(`should return __ASYNC_JOBS_TYPE__`, (actionCreator) => {
+    expect(getAsyncJobsType(actionCreator)).toEqual(
+      actionCreator.__ASYNC_JOBS_TYPE__
     )
   })
 })

@@ -57,12 +57,12 @@ export enum JobActions {
   REMOVE = `REMOVE`,
 }
 
-export const REDUX_ASYNC_PREFIX = `@RA` as const
+export const ASYNC_JOBS_PREFIX = `@RA` as const
 
 export type ActionTypeCreator<
   JobAction extends JobActions,
   JobName extends string
-> = `${typeof REDUX_ASYNC_PREFIX}/${JobAction}/${JobName}`
+> = `${typeof ASYNC_JOBS_PREFIX}/${JobAction}/${JobName}`
 
 export const asyncActionTypeCreator: <
   JobAction extends JobActions,
@@ -71,7 +71,7 @@ export const asyncActionTypeCreator: <
   jobAction: JobAction,
   name: JobName
 ) => ActionTypeCreator<JobAction, JobName> = (jobAction, name) =>
-  `${REDUX_ASYNC_PREFIX}/${jobAction}/${name}`
+  `${ASYNC_JOBS_PREFIX}/${jobAction}/${name}`
 
 export type AsyncJobParams<JobName extends string, Payload> = Pick<
   AsyncMeta<JobName>,
@@ -167,7 +167,7 @@ export function isSpecificAsyncActionType<
 > {
   return (
     typeof action.type === `string` &&
-    action.type === `${REDUX_ASYNC_PREFIX}/${jobAction}/${jobName}`
+    action.type === `${ASYNC_JOBS_PREFIX}/${jobAction}/${jobName}`
   )
 }
 
@@ -217,29 +217,29 @@ export type GeneralAsyncActionCreatorWithoutNameParameter<
       >
 ) => ReturnType<GeneralJobActionEagerCreator<JobAction, JobName, Payload>>
 
-export type WithReduxAsyncType<
+export type WithAsyncJobsType<
   JobAction extends JobActions,
   JobName extends string,
   T
 > = T & {
-  __REDUX_ASYNC_TYPE__: ActionTypeCreator<JobAction, JobName>
+  __ASYNC_JOBS_TYPE__: ActionTypeCreator<JobAction, JobName>
 }
 
-export type GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+export type GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
   JobAction extends JobActions,
   JobName extends string,
   Payload
-> = WithReduxAsyncType<
+> = WithAsyncJobsType<
   JobAction,
   JobName,
   GeneralAsyncActionCreatorWithoutNameParameter<JobAction, JobName, Payload>
 >
 
-export type CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+export type CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
   JobAction extends JobActions,
   JobName extends string,
   Payload
-> = WithReduxAsyncType<
+> = WithAsyncJobsType<
   JobAction,
   JobName,
   CreateOrStartAsyncActionCreatorWithoutNameParameter<
@@ -249,15 +249,15 @@ export type CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithReduxAsync
   >
 >
 
-export function getReduxAsyncType<
+export function getAsyncJobsType<
   ActionCreator extends
-    | CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+    | CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
         JobAction,
         JobName,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         any
       >
-    | GeneralAsyncActionCreatorWithoutNameParameterAndWithReduxAsyncType<
+    | GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
         JobAction,
         JobName,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -267,8 +267,8 @@ export function getReduxAsyncType<
   JobName extends string = string
 >(
   reduxAsyncActionCreator: ActionCreator
-): typeof reduxAsyncActionCreator[`__REDUX_ASYNC_TYPE__`] {
-  return reduxAsyncActionCreator.__REDUX_ASYNC_TYPE__
+): typeof reduxAsyncActionCreator[`__ASYNC_JOBS_TYPE__`] {
+  return reduxAsyncActionCreator.__ASYNC_JOBS_TYPE__
 }
 
 // https://github.com/reduxjs/redux/blob/d794c56f78eccb56ba3c67971c26df8ee34dacc1/src/types/actions.ts#L18

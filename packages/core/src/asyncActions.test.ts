@@ -36,7 +36,7 @@ describe(`createJobSet`, () => {
     loginAsyncJobs.start,
     loginAsyncJobs.succeed,
   ])(
-    `%p should create redux action creator related to async jobs`,
+    `%p should create (redux) action creator related to async jobs`,
     (actionCreator) => {
       expect(actionCreator).toBeDefined()
       expect(typeof actionCreator).toBe(`function`)

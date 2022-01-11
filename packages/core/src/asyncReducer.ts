@@ -4,7 +4,7 @@ import {
   AsyncStatus,
   GeneralJobActionEagerCreator,
   JobActions,
-  REDUX_ASYNC_PREFIX,
+  ASYNC_JOBS_PREFIX,
 } from "./asyncTypes"
 import { produce } from "immer"
 import type { nanoid } from "nanoid"
@@ -129,6 +129,6 @@ function isAsyncActionType<JobAction extends JobActions>(
 > & { name: string; id: string; payload?: any } {
   return (
     typeof action.type === `string` &&
-    action.type.startsWith(`${REDUX_ASYNC_PREFIX}/${jobAction}`)
+    action.type.startsWith(`${ASYNC_JOBS_PREFIX}/${jobAction}`)
   )
 }
