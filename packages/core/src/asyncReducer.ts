@@ -6,17 +6,17 @@ import {
   JobActions,
   ASYNC_JOBS_PREFIX,
 } from "./asyncTypes"
-import type { nanoid } from "nanoid"
 import { asyncReducerErrorReporter } from "./asyncReducerErrors"
+import { Reducer } from "."
 
 export type AsyncReducerState = {
-  asyncJobs: Record<ReturnType<typeof nanoid>, AsyncMeta<string, Error>>
+  asyncJobs: Record<string, AsyncMeta<string, Error>>
 }
 
-export const asyncReducer: (
-  state: AsyncReducerState,
-  action: AnyAction
-) => AsyncReducerState = (state = { asyncJobs: {} }, action) => {
+export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
+  state = { asyncJobs: {} },
+  action
+) => {
   if (isAsyncActionType(action, JobActions.CREATE)) {
     if (action.id in state.asyncJobs) {
       asyncReducerErrorReporter.jobExistsOnCreate.describe(action)

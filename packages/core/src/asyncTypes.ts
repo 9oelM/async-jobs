@@ -273,7 +273,7 @@ export function getAsyncJobsType<
 
 // https://github.com/reduxjs/redux/blob/d794c56f78eccb56ba3c67971c26df8ee34dacc1/src/types/actions.ts#L18
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface Action<T = any> {
+export interface Action<T = any> {
   type: T
 }
 
@@ -288,3 +288,8 @@ export interface AnyAction extends Action {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [extraProps: string]: any
 }
+// from redux
+export type Reducer<S = any, A extends Action = AnyAction> = (
+  state: S | undefined,
+  action: A
+) => S

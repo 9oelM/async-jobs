@@ -68,6 +68,9 @@ export const Styles = {
     width: `100%`,
     height: `100%`,
   },
+  fullW: {
+    width: `100%`,
+  },
   smallMargin: {
     margin: `0.5rem`,
   },

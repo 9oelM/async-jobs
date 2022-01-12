@@ -3,6 +3,7 @@ import { Code } from "../components/Code"
 import { useSendAndManageRequest } from "../constants"
 import { pickStyles } from "../styles"
 import { enhance } from "../utilities/essentials"
+import { useTypedSelector } from "../redux/store"
 
 function useSendExampleRequests() {
   const req1 = useSendAndManageRequest(1)
@@ -26,11 +27,21 @@ function useSendExampleRequests() {
 const Basic = enhance(() => {
   const allReqs = useSendExampleRequests()
 
+  const allAsyncReqsInfo = useTypedSelector((s) =>
+    Object.values(s.async.asyncJobs)
+  )
+
   useEffect(() => {
     allReqs.forEach(({ send }) => send())
   }, [allReqs])
 
-  return null
+  return (
+    <div style={pickStyles(`fullW`)}>
+      {allAsyncReqsInfo.map((asyncReq) => {
+        return asyncReq.id
+      })}
+    </div>
+  )
 })()
 
 export const WithRedux = enhance(() => {
