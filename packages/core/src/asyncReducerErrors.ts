@@ -1,10 +1,11 @@
+import { AnyAction } from "."
 import {
   CreateOrStartJobActionEagerCreator,
   GeneralJobActionEagerCreator,
   JobActions,
 } from "./asyncTypes"
 
-export type ErrorDescriptor<Payload = unknown> = <
+export type SpecificErrorDescriptor<Payload = unknown> = <
   JobName extends string,
   Action extends
     | ReturnType<GeneralJobActionEagerCreator<JobActions, JobName, Payload>>
@@ -21,14 +22,14 @@ function makeTypeInferredAsyncReducerErrors<Keys extends string>(
   asyncReducerErrors: Record<
     Keys,
     {
-      describe: ErrorDescriptor
+      describe: SpecificErrorDescriptor
       code: number
     }
   >
 ): Record<
   Keys,
   {
-    describe: ErrorDescriptor
+    describe: SpecificErrorDescriptor
     code: number
   }
 > {
@@ -64,3 +65,15 @@ Error Code: 2`
     code: 2,
   },
 })
+
+export const asyncReducerGeneralErrorReporter = {
+  actionDoesNotExistError: {
+    describe: (action: AnyAction) => {
+      console.error(
+        `${action.type} will not have any effect because it is not a valid action.
+Error Code: 3`
+      )
+    },
+    code: 3,
+  },
+}

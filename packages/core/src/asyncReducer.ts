@@ -6,118 +6,167 @@ import {
   JobActions,
   ASYNC_JOBS_PREFIX,
 } from "./asyncTypes"
-import { produce } from "immer"
 import type { nanoid } from "nanoid"
-import { asyncReducerErrorReporter } from "./asyncReducerErrors"
+import {
+  asyncReducerErrorReporter,
+  asyncReducerGeneralErrorReporter,
+} from "./asyncReducerErrors"
 
 export type AsyncReducerState = {
   asyncJobs: Record<ReturnType<typeof nanoid>, AsyncMeta<string, Error>>
 }
 
-export const asyncReducer = produce<
-  (state: AsyncReducerState, action: AnyAction) => AsyncReducerState
->(
-  (state, action) => {
-    if (isAsyncActionType(action, JobActions.CREATE)) {
-      if (action.id in state.asyncJobs) {
-        asyncReducerErrorReporter.jobExistsOnCreate.describe(action)
-        return state
-      }
+export const asyncReducer: (
+  state: AsyncReducerState,
+  action: AnyAction
+) => AsyncReducerState = (state, action) => {
+  if (isAsyncActionType(action, JobActions.CREATE)) {
+    if (action.id in state.asyncJobs) {
+      asyncReducerErrorReporter.jobExistsOnCreate.describe(action)
+      return state
+    }
 
-      state.asyncJobs[action.id] = {
-        id: action.id,
-        status: AsyncStatus.NOT_STARTED,
-        name: action.name,
-        timestamp: {
-          [AsyncStatus.NOT_STARTED]: Date.now(),
+    return {
+      ...state,
+      asyncJobs: {
+        ...state.asyncJobs,
+        [action.id]: {
+          id: action.id,
+          status: AsyncStatus.NOT_STARTED,
+          name: action.name,
+          timestamp: {
+            [AsyncStatus.NOT_STARTED]: Date.now(),
+          },
+        },
+      },
+    }
+  } else if (isAsyncActionType(action, JobActions.START)) {
+    if (action.id in state.asyncJobs) {
+      // for typescript to understand the type correctly
+      const maybeUndefinedJob = state.asyncJobs[action.id]
+      if (!maybeUndefinedJob) return state
+
+      const job = {
+        ...maybeUndefinedJob,
+      }
+      job.status = AsyncStatus.LOADING
+      job.timestamp = { ...job.timestamp }
+      job.timestamp[AsyncStatus.LOADING] = Date.now()
+      return {
+        ...state,
+        asyncJobs: {
+          ...state.asyncJobs,
+          [action.id]: job,
         },
       }
-      return state
     }
-    if (isAsyncActionType(action, JobActions.START)) {
-      if (action.id in state.asyncJobs) {
-        const job = state.asyncJobs[action.id]
-        if (job) {
-          job.status = AsyncStatus.LOADING
-          job.timestamp[AsyncStatus.LOADING] = Date.now()
-        }
 
-        return state
-      }
-
-      state.asyncJobs[action.id] = {
-        id: action.id,
-        status: AsyncStatus.LOADING,
-        name: action.name,
-        timestamp: {
-          [AsyncStatus.LOADING]: Date.now(),
+    // if not found, return a new job
+    return {
+      ...state,
+      asyncJobs: {
+        ...state.asyncJobs,
+        [action.id]: {
+          id: action.id,
+          status: AsyncStatus.LOADING,
+          name: action.name,
+          timestamp: {
+            [AsyncStatus.LOADING]: Date.now(),
+          },
         },
-      }
+      },
+    }
+  } else if (isAsyncActionType(action, JobActions.FAIL)) {
+    if (!(action.id in state.asyncJobs)) {
+      asyncReducerErrorReporter.jobDoesNotExistError.describe(action)
       return state
     }
-    if (isAsyncActionType(action, JobActions.FAIL)) {
-      if (!(action.id in state.asyncJobs)) {
-        asyncReducerErrorReporter.jobDoesNotExistError.describe(action)
-        return state
-      }
+    // for typescript to understand the type correctly
+    const maybeUndefinedJob = state.asyncJobs[action.id]
+    if (!maybeUndefinedJob) return state
 
-      const job = state.asyncJobs[action.id]
-
-      if (!job) return state
-
-      job.error = action.payload
-      job.status = AsyncStatus.FAILURE
-      job.timestamp[AsyncStatus.FAILURE] = Date.now()
-
-      return state
+    const job = {
+      ...maybeUndefinedJob,
     }
-    if (isAsyncActionType(action, JobActions.REMOVE)) {
-      if (!(action.id in state.asyncJobs)) {
-        asyncReducerErrorReporter.jobDoesNotExistWarning.describe(action)
-        return state
-      }
 
-      delete state.asyncJobs[action.id]
+    job.error = action.payload
+    job.status = AsyncStatus.FAILURE
+    job.timestamp = { ...job.timestamp }
+    job.timestamp[AsyncStatus.FAILURE] = Date.now()
 
-      return state
+    return {
+      ...state,
+      asyncJobs: {
+        ...state.asyncJobs,
+        [action.id]: job,
+      },
     }
-    if (isAsyncActionType(action, JobActions.CANCEL)) {
-      if (!(action.id in state.asyncJobs)) {
-        asyncReducerErrorReporter.jobDoesNotExistWarning.describe(action)
-        return state
-      }
-
-      const job = state.asyncJobs[action.id]
-
-      if (!job) return state
-
-      job.status = AsyncStatus.CANCELLED
-      job.timestamp[AsyncStatus.CANCELLED] = Date.now()
-
-      return state
-    }
-    if (isAsyncActionType(action, JobActions.SUCCEED)) {
-      if (!(action.id in state.asyncJobs)) {
-        asyncReducerErrorReporter.jobDoesNotExistError.describe(action)
-        return state
-      }
-
-      const job = state.asyncJobs[action.id]
-
-      if (!job) return state
-
-      job.status = AsyncStatus.SUCCESS
-      job.timestamp[AsyncStatus.SUCCESS] = Date.now()
-
+  } else if (isAsyncActionType(action, JobActions.REMOVE)) {
+    if (!(action.id in state.asyncJobs)) {
+      asyncReducerErrorReporter.jobDoesNotExistWarning.describe(action)
       return state
     }
 
-    return state
-  },
-  {
-    asyncJobs: {},
+    const asyncJobs = { ...state.asyncJobs }
+    delete asyncJobs[action.id]
+
+    return {
+      ...state,
+      asyncJobs,
+    }
+  } else if (isAsyncActionType(action, JobActions.CANCEL)) {
+    if (!(action.id in state.asyncJobs)) {
+      asyncReducerErrorReporter.jobDoesNotExistWarning.describe(action)
+      return state
+    }
+    // for typescript to understand the type correctly
+    const maybeUndefinedJob = state.asyncJobs[action.id]
+    if (!maybeUndefinedJob) return state
+
+    const job = {
+      ...maybeUndefinedJob,
+    }
+
+    job.status = AsyncStatus.CANCELLED
+    job.timestamp = { ...job.timestamp }
+    job.timestamp[AsyncStatus.CANCELLED] = Date.now()
+
+    return {
+      ...state,
+      asyncJobs: {
+        ...state.asyncJobs,
+        [action.id]: job,
+      },
+    }
+  } else if (isAsyncActionType(action, JobActions.SUCCEED)) {
+    if (!(action.id in state.asyncJobs)) {
+      asyncReducerErrorReporter.jobDoesNotExistError.describe(action)
+      return state
+    }
+    // for typescript to understand the type correctly
+    const maybeUndefinedJob = state.asyncJobs[action.id]
+    if (!maybeUndefinedJob) return state
+
+    const job = {
+      ...maybeUndefinedJob,
+    }
+
+    job.status = AsyncStatus.SUCCESS
+    job.timestamp = { ...job.timestamp }
+    job.timestamp[AsyncStatus.SUCCESS] = Date.now()
+
+    return {
+      ...state,
+      asyncJobs: {
+        ...state.asyncJobs,
+        [action.id]: job,
+      },
+    }
   }
-)
+
+  asyncReducerGeneralErrorReporter.actionDoesNotExistError.describe(action)
+  return state
+}
 
 function isAsyncActionType<JobAction extends JobActions>(
   action: Record<string | number | symbol, any> & {
