@@ -18,7 +18,8 @@
     "core:dev": "npm run dev -w packages/core",
     "core:package": "npm run package -w packages/core",
     "example-app:dev": "npm run dev -w packages/example-app",
-    "start": "run-p core:dev example-app:dev"
+    "example-api:dev": "npm run localdev -w packages/example-api",
+    "start": "run-p core:dev example-api:dev example-app:dev"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.9.1",

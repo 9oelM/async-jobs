@@ -132,7 +132,7 @@ export const removeJob: GeneralJobActionCreator<JobActions.REMOVE> = (
  * import { getType } from 'typesafe-actions'
  *
  * yield takeLatest(getType(flightTicketRequestJobSet.start), function *(action: ActionType<typeof flightTicketRequestJobSet.start>){
- *   const result = yield call(() => window.fetch('flighttickets.com`));
+ *   const result = yield call(() => window.fetch('flighttickets.com'));
  *   ...
  * })
  * ```

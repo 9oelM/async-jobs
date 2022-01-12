@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "localdev": "vercel dev"
+    "localdev": "vercel dev",
+    "vercel": "vercel"
   },
   "keywords": [],
   "author": "9oelM <hj923@hotmail.com>",
