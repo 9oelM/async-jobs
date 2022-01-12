@@ -1,4 +1,3 @@
-import { AnyAction } from "."
 import {
   CreateOrStartJobActionEagerCreator,
   GeneralJobActionEagerCreator,
@@ -65,15 +64,3 @@ Error Code: 2`
     code: 2,
   },
 })
-
-export const asyncReducerGeneralErrorReporter = {
-  actionDoesNotExistError: {
-    describe: (action: AnyAction) => {
-      console.error(
-        `${action.type} will not have any effect because it is not a valid action.
-Error Code: 3`
-      )
-    },
-    code: 3,
-  },
-}
