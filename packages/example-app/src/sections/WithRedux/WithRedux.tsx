@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef } from "react"
 import { Code } from "../../components/Code"
+import { SingleNetworkRequestBar } from "../../components/SingleNetworkRequestBar"
 import { useTypedSelector } from "../../redux/store"
 import { pickStyles } from "../../styles"
 import { enhance } from "../../utilities/essentials"
@@ -27,6 +28,7 @@ function useSendExampleRequests() {
 
 const Basic = enhance(() => {
   const allReqs = useSendExampleRequests()
+  const firstRequestBeginTime = useRef(Date.now())
 
   const allAsyncReqsInfo = useTypedSelector((s) =>
     Object.values(s.async.asyncJobs)
@@ -36,26 +38,17 @@ const Basic = enhance(() => {
     allReqs.forEach(({ send }) => send())
   }, [allReqs])
 
-  const timeout = useState(false)
-
-  useEffect(() => {
-    setTimeout(() => {
-      timeout[1](true)
-    }, 3000)
-  }, [])
-
   return (
     <div style={pickStyles(`fullW`)}>
       {allAsyncReqsInfo.map((asyncReq) => {
-        return asyncReq.id
+        return (
+          <SingleNetworkRequestBar
+            requestId={asyncReq.id}
+            key={asyncReq.id}
+            firstRequestBeginTime={firstRequestBeginTime.current}
+          />
+        )
       })}
-      <div
-        id="test"
-        style={{
-          ...pickStyles(`animatedGrowingBar`),
-          animationPlayState: timeout[0] ? `paused` : `running`,
-        }}
-      ></div>
     </div>
   )
 })()

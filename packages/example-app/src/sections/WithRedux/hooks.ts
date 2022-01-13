@@ -5,21 +5,20 @@ import { exampleApiJobSet } from "../../redux/asyncActions"
 import { wait } from "../../utilities/essentials"
 
 export const useSendAndManageRequest = (
-  initialDelaySecs?: number,
+  initialDelaySecs: number,
   timeout_secs?: number,
   make_error?: boolean
 ) => {
   const dispatch = useDispatch()
-  const exampleApiJobSetInitialAction = useRef(
-    initialDelaySecs ? exampleApiJobSet.create({}) : exampleApiJobSet.start({})
-  )
+  const exampleApiJobSetInitialAction = useRef(exampleApiJobSet.create({}))
 
   return {
     send: async () => {
-      if (initialDelaySecs) {
-        await wait(initialDelaySecs * 1000)
-      }
       dispatch(exampleApiJobSetInitialAction.current)
+      await wait(initialDelaySecs * 1000)
+      dispatch(
+        exampleApiJobSet.start({ id: exampleApiJobSetInitialAction.current.id })
+      )
       API.sendExampleRequest({
         timeout_secs,
         make_error,

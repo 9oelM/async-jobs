@@ -1,6 +1,7 @@
 import { asyncReducer } from "@async-jobs/core"
 import { combineReducers, createStore } from "redux"
 import { useSelector } from "react-redux"
+import { composeWithDevTools } from "redux-devtools-extension"
 
 const reducers = {
   async: asyncReducer,
@@ -16,4 +17,4 @@ export function useTypedSelector<TSelected = unknown>(
   return useSelector<RootState, TSelected>(selector, equalityFn)
 }
 
-export const store = createStore(rootReducer)
+export const store = createStore(rootReducer, composeWithDevTools())
