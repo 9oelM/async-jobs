@@ -15,7 +15,7 @@ function useSendExampleRequests() {
   const req5 = useSendAndManageRequest(3, 2, false)
   const req6 = useSendAndManageRequest(5, 6, false)
   const req7 = useSendAndManageRequest(8, 8)
-  const req8 = useSendAndManageRequest(6)
+  const req8 = useSendAndManageRequest(6, 0, true)
   const req9 = useSendAndManageRequest(5)
   const req10 = useSendAndManageRequest(10)
   const allReqs = useMemo(

@@ -2,8 +2,24 @@ import React, { useEffect, useState } from "react"
 import { asyncJobByIdSelector, AsyncStatus } from "@async-jobs/core"
 import { useTypedSelector } from "../redux/store"
 import { enhance } from "../utilities/essentials"
-import { pickStyles } from "../styles"
+import { Colors, pickStyles } from "../styles"
 import { Constants } from "../constants"
+import Tippy from "@tippyjs/react"
+
+function getNetworkRequestBarBgColor(asyncStatus: AsyncStatus) {
+  switch (asyncStatus) {
+    case AsyncStatus.NOT_STARTED:
+      return Colors.brown
+    case AsyncStatus.LOADING:
+      return Colors.brown
+    case AsyncStatus.FAILURE:
+      return `red`
+    case AsyncStatus.SUCCESS:
+      return `green`
+    default:
+      return Colors.brown
+  }
+}
 
 export const SingleNetworkRequestBar = enhance<{
   requestId: string
@@ -15,10 +31,8 @@ export const SingleNetworkRequestBar = enhance<{
   const [timeDiffUntilRequestFirstSent, setTimeDiffUntilRequestFirstSent] =
     useState<null | number>(null)
 
-  console.log(singleAsyncRequestInfo)
-  if (!singleAsyncRequestInfo) return null
-
   useEffect(() => {
+    if (!singleAsyncRequestInfo) return
     if (
       singleAsyncRequestInfo.status === AsyncStatus.LOADING &&
       singleAsyncRequestInfo.timestamp[`LOADING`] &&
@@ -31,31 +45,32 @@ export const SingleNetworkRequestBar = enhance<{
         singleAsyncRequestInfo.timestamp[`LOADING`] - firstRequestBeginTime
       )
     }
-  }, [singleAsyncRequestInfo.status, timeDiffUntilRequestFirstSent])
+  }, [singleAsyncRequestInfo?.status, timeDiffUntilRequestFirstSent])
 
-  // const timeDiffUntilRequestFirstSent = (() => {
-  //   if (
-  //     singleAsyncRequestInfo.status === AsyncStatus.LOADING &&
-  //     singleAsyncRequestInfo.timestamp[`LOADING`] &&
-  //     singleAsyncRequestInfo.timestamp[`NOT_STARTED`]
-  //   ) {
-  //     const timeDiffUntilRequestFirstSent =
-  //       singleAsyncRequestInfo.timestamp[`LOADING`] -
-  //       singleAsyncRequestInfo.timestamp[`NOT_STARTED`]
+  if (!singleAsyncRequestInfo) return null
 
-  //     return timeDiffUntilRequestFirstSent
-  //   }
-  //   return null
-  // })()
+  const isStatusNotStarted =
+    singleAsyncRequestInfo.status === AsyncStatus.NOT_STARTED
 
-  // console.log(firstRequestBeginTime)
-  // console.log(timeDiffUntilRequestFirstSent)
-
-  if (singleAsyncRequestInfo.status === AsyncStatus.NOT_STARTED) {
-    return <div>Queued (request created but not started)</div>
-  }
-
-  return (
+  const queuedText = isStatusNotStarted ? (
+    <div
+      style={{
+        maxHeight: `20px`,
+        marginLeft: `20px`,
+        alignSelf: `center`,
+      }}
+    >
+      <p
+        style={{
+          ...pickStyles(`colorBrown`, `extraSmallFontSize`),
+          textAlign: `center`,
+        }}
+      >
+        Queued
+      </p>
+    </div>
+  ) : null
+  const networkRequestProgressBar = isStatusNotStarted ? null : (
     <div
       style={{
         ...pickStyles(`animatedGrowingBar`),
@@ -68,7 +83,41 @@ export const SingleNetworkRequestBar = enhance<{
         )
           ? `paused`
           : `running`,
+        backgroundColor: getNetworkRequestBarBgColor(
+          singleAsyncRequestInfo.status
+        ),
       }}
     ></div>
+  )
+
+  return (
+    <Tippy
+      content={
+        <pre>
+          <code>{JSON.stringify(singleAsyncRequestInfo, null, 2)}</code>
+        </pre>
+      }
+    >
+      <article
+        style={{
+          ...pickStyles(`flex`),
+          minHeight: `20px`,
+          borderBottom: `1px solid ${Colors[`brown`]}`,
+        }}
+      >
+        <p
+          style={{
+            ...pickStyles(`colorBrown`, `extraSmallFontSize`),
+            width: `90px`,
+            textOverflow: `ellipsis`,
+            overflow: `hidden`,
+            whiteSpace: `nowrap`,
+            alignSelf: `center`,
+          }}
+        >{`Req #${requestId.substring(0, 6)}`}</p>
+        {queuedText}
+        {networkRequestProgressBar}
+      </article>
+    </Tippy>
   )
 })()

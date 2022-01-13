@@ -90,6 +90,9 @@ export const Styles = {
   largePadding: {
     padding: `2rem`,
   },
+  extraSmallFontSize: {
+    fontSize: `0.75rem`,
+  },
   smallFontSize: {
     fontSize: `1rem`,
   },
@@ -113,8 +116,8 @@ export const Styles = {
   },
   animatedGrowingBar: {
     height: 20,
-    width: 50,
-    background: Colors.skyBlue,
+    width: 0,
+    background: Colors.brown,
     animationName: `grow`,
     animationDuration: `${Constants.NETWORK_REQUEST_MAXIMUM_ANIMATION_DURATION_MS}ms`,
     animationTimingFunction: `linear`,
