@@ -9,7 +9,7 @@ export enum AsyncStatus {
    * @description when the Job has been first made
    * and the actual async Job has not been started
    */
-  NOT_STARTED = `NOT_STARTED`,
+  CREATED = `CREATED`,
   LOADING = `LOADING`,
   SUCCESS = `SUCCESS`,
   FAILURE = `FAILURE`,
@@ -37,7 +37,7 @@ export type AsyncMeta<RequestName extends string, Err = Error> = {
    * time at which each action of the Job took place
    */
   timestamp: {
-    [AsyncStatus.NOT_STARTED]?: number
+    [AsyncStatus.CREATED]?: number
     [AsyncStatus.LOADING]?: number
     [AsyncStatus.SUCCESS]?: number
     [AsyncStatus.FAILURE]?: number

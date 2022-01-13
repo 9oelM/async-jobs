@@ -29,10 +29,10 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
         ...state.asyncJobs,
         [action.id]: {
           id: action.id,
-          status: AsyncStatus.NOT_STARTED,
+          status: AsyncStatus.CREATED,
           name: action.name,
           timestamp: {
-            [AsyncStatus.NOT_STARTED]: Date.now(),
+            [AsyncStatus.CREATED]: Date.now(),
           },
         },
       },

@@ -123,6 +123,9 @@ export const Styles = {
     animationTimingFunction: `linear`,
     animationIterationCount: `once`,
   },
+  listItem: {
+    marginLeft: `0.5rem`,
+  },
 }
 
 const normalizedStyles = {

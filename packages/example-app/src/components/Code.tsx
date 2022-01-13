@@ -4,7 +4,7 @@ import { enhance } from "../utilities/essentials"
 import * as clipboard from "clipboard-polyfill/text"
 
 export const Code = enhance<{
-  title: string
+  title?: string
   code: string
 }>(({ title, code }) => {
   const [isCopiedToClipboard, setCopiedToClipboard] = useState(false)
@@ -31,7 +31,7 @@ export const Code = enhance<{
 
   return (
     <pre style={pickStyles(`cursorPointer`)} onClick={onClickCode}>
-      <pre style={pickStyles(`colorBrown`)}>{title}</pre>
+      {title ? <pre style={pickStyles(`colorBrown`)}>{title}</pre> : null}
       {isCopiedToClipboard ? (
         <div
           style={{
@@ -43,21 +43,14 @@ export const Code = enhance<{
             style={{
               position: `relative`,
               left: `-50%`,
-              ...pickStyles(
-                `bgPink`,
-                `mediumRounded`,
-                `mediumPadding`,
-                `smallMargin`
-              ),
+              ...pickStyles(`bgPink`, `smallPadding`, `smallMargin`),
             }}
           >
             Copied
           </div>
         </div>
       ) : null}
-      <code style={pickStyles(`bgYellow`, `mediumPadding`, `largeRounded`)}>
-        {code}
-      </code>
+      <code>{code}</code>
     </pre>
   )
 })()

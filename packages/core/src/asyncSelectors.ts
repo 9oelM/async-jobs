@@ -33,7 +33,7 @@ export type AsyncJobSelectorOptions = {
    *          status: AsyncStatus.FAILURE,
    *          name: 'TEST',
    *          timestamp: {
-   *            [AsyncStatus.NOT_STARTED]: 10,
+   *            [AsyncStatus.CREATED]: 10,
    *            [AsyncStatus.LOADING]: 11,
    *            [AsyncStatus.FAILURE]: 12,
    *          },

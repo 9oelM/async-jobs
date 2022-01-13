@@ -5,6 +5,7 @@ import { store } from "./redux/store"
 import hljs from "highlight.js/lib/core"
 import javascript from "highlight.js/lib/languages/javascript"
 import { WithRedux } from "./sections/WithRedux/WithRedux"
+import { Code } from "./components/Code"
 hljs.registerLanguage(`javascript`, javascript)
 
 export const App = () => {
@@ -14,12 +15,42 @@ export const App = () => {
 
   return (
     <main style={pickStyles(`bgPink`, `fullWH`, `smallPadding`)}>
-      <h1 style={pickStyles(`colorBrown`, `largeFontSize`)}>async-jobs</h1>
-      <div style={pickStyles(`mediumMargin`)} />
-      <h1 style={pickStyles(`colorBrown`, `mediumFontSize`)}>With Redux</h1>
+      <h1
+        style={{
+          ...pickStyles(`colorBrown`, `largeFontSize`, `fullW`),
+          textAlign: `center`,
+        }}
+      >
+        async-jobs
+      </h1>
+      <div style={pickStyles(`mediumMargin`)}>
+        <h2
+          style={pickStyles(`colorBrown`, `mediumFontSize`)}
+          id="installation"
+        >
+          Installation
+        </h2>
+        <div style={pickStyles(`mediumMargin`)} />
+        <Code code="npm i --save @async-jobs/core" />
+        <div style={pickStyles(`smallMargin`)} />
+        <Code code="yarn add @async-jobs/core" />
+      </div>
       <Provider store={store}>
         <WithRedux />
       </Provider>
+      <div style={pickStyles(`mediumMargin`)}>
+        <h2 style={pickStyles(`colorBrown`, `mediumFontSize`)}>Recipes</h2>
+        <p>
+          Visit{` `}
+          <a
+            href="https://github.com/9oelM/async-jobs#readme"
+            target="_blank"
+            rel="noreferrer"
+          >
+            the repository for recipes
+          </a>
+        </p>
+      </div>
     </main>
   )
 }

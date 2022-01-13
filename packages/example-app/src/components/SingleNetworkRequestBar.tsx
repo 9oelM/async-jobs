@@ -8,7 +8,7 @@ import Tippy from "@tippyjs/react"
 
 function getNetworkRequestBarBgColor(asyncStatus: AsyncStatus) {
   switch (asyncStatus) {
-    case AsyncStatus.NOT_STARTED:
+    case AsyncStatus.CREATED:
       return Colors.brown
     case AsyncStatus.LOADING:
       return Colors.brown
@@ -49,10 +49,10 @@ export const SingleNetworkRequestBar = enhance<{
 
   if (!singleAsyncRequestInfo) return null
 
-  const isStatusNotStarted =
-    singleAsyncRequestInfo.status === AsyncStatus.NOT_STARTED
+  const isRequestNotYetStarted =
+    singleAsyncRequestInfo.status === AsyncStatus.CREATED
 
-  const queuedText = isStatusNotStarted ? (
+  const queuedText = isRequestNotYetStarted ? (
     <div
       style={{
         maxHeight: `20px`,
@@ -70,7 +70,7 @@ export const SingleNetworkRequestBar = enhance<{
       </p>
     </div>
   ) : null
-  const networkRequestProgressBar = isStatusNotStarted ? null : (
+  const networkRequestProgressBar = isRequestNotYetStarted ? null : (
     <div
       style={{
         ...pickStyles(`animatedGrowingBar`),
@@ -114,7 +114,7 @@ export const SingleNetworkRequestBar = enhance<{
             whiteSpace: `nowrap`,
             alignSelf: `center`,
           }}
-        >{`Req #${requestId.substring(0, 6)}`}</p>
+        >{`Job #${requestId.substring(0, 6)}`}</p>
         {queuedText}
         {networkRequestProgressBar}
       </article>

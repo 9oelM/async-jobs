@@ -28,7 +28,7 @@ const c: AsyncMeta<typeof name, Error> = {
   status: AsyncStatus.LOADING,
   name,
   timestamp: {
-    [AsyncStatus.NOT_STARTED]: 3,
+    [AsyncStatus.CREATED]: 3,
     [AsyncStatus.LOADING]: 3,
   },
 }
@@ -54,7 +54,7 @@ const f: AsyncMeta<typeof name, Error> = {
   status: AsyncStatus.SUCCESS,
   name,
   timestamp: {
-    [AsyncStatus.NOT_STARTED]: 1,
+    [AsyncStatus.CREATED]: 1,
     [AsyncStatus.LOADING]: 4,
     [AsyncStatus.SUCCESS]: 5,
   },
@@ -64,7 +64,7 @@ const g: AsyncMeta<typeof name, Error> = {
   status: AsyncStatus.FAILURE,
   name,
   timestamp: {
-    [AsyncStatus.NOT_STARTED]: 3,
+    [AsyncStatus.CREATED]: 3,
     [AsyncStatus.LOADING]: 7,
     [AsyncStatus.FAILURE]: 10,
   },
@@ -74,7 +74,7 @@ const h: AsyncMeta<typeof name2, Error> = {
   status: AsyncStatus.FAILURE,
   name: name2,
   timestamp: {
-    [AsyncStatus.NOT_STARTED]: 10,
+    [AsyncStatus.CREATED]: 10,
     [AsyncStatus.LOADING]: 11,
   },
 }
