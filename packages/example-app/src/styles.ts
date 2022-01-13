@@ -1,4 +1,5 @@
 import { CSSProperties } from "react"
+import { Constants } from "./constants"
 
 // /* Color Theme Swatches in Hex */
 // .Playful-1-hex { color: #F2D0D9; }
@@ -109,6 +110,15 @@ export const Styles = {
   },
   cursorPointer: {
     cursor: `pointer`,
+  },
+  animatedGrowingBar: {
+    height: 20,
+    width: 50,
+    background: Colors.skyBlue,
+    animationName: `grow`,
+    animationDuration: `${Constants.NETWORK_REQUEST_MAXIMUM_ANIMATION_DURATION_MS}ms`,
+    animationTimingFunction: `linear`,
+    animationIterationCount: `once`,
   },
 }
 

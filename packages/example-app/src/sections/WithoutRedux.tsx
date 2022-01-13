@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { API } from "../api/config"
+import { API } from "../api"
 import { Code } from "../components/Code"
 import { pickStyles } from "../styles"
 import { enhance } from "../utilities/essentials"

@@ -1,8 +1,8 @@
-import { IS_PRODUCTION } from "../env"
+import { Constants } from "../constants"
 import { tcAsync, TcResult } from "../utilities/essentials"
 
 export class API {
-  static baseUrl = IS_PRODUCTION ? `WIP` : `http://localhost:3000`
+  static baseUrl = Constants.IS_PRODUCTION ? `WIP` : `http://localhost:3000`
 
   static async sendExampleRequest({
     timeout_secs = 0,

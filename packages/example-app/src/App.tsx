@@ -4,7 +4,7 @@ import { Provider } from "react-redux"
 import { store } from "./redux/store"
 import hljs from "highlight.js/lib/core"
 import javascript from "highlight.js/lib/languages/javascript"
-import { WithRedux } from "./sections/WithRedux"
+import { WithRedux } from "./sections/WithRedux/WithRedux"
 hljs.registerLanguage(`javascript`, javascript)
 
 export const App = () => {

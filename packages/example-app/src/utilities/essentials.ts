@@ -42,3 +42,6 @@ export function tcSync<
     return [e] as [Throws]
   }
 }
+
+export const wait = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms))

@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo } from "react"
-import { Code } from "../components/Code"
-import { useSendAndManageRequest } from "../constants"
-import { pickStyles } from "../styles"
-import { enhance } from "../utilities/essentials"
-import { useTypedSelector } from "../redux/store"
+import React, { useEffect, useMemo, useState } from "react"
+import { Code } from "../../components/Code"
+import { useTypedSelector } from "../../redux/store"
+import { pickStyles } from "../../styles"
+import { enhance } from "../../utilities/essentials"
+import { useSendAndManageRequest } from "./hooks"
+import "./withredux.css"
 
 function useSendExampleRequests() {
   const req1 = useSendAndManageRequest(1)
@@ -35,11 +36,26 @@ const Basic = enhance(() => {
     allReqs.forEach(({ send }) => send())
   }, [allReqs])
 
+  const timeout = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      timeout[1](true)
+    }, 3000)
+  }, [])
+
   return (
     <div style={pickStyles(`fullW`)}>
       {allAsyncReqsInfo.map((asyncReq) => {
         return asyncReq.id
       })}
+      <div
+        id="test"
+        style={{
+          ...pickStyles(`animatedGrowingBar`),
+          animationPlayState: timeout[0] ? `paused` : `running`,
+        }}
+      ></div>
     </div>
   )
 })()
