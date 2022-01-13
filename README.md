@@ -224,31 +224,13 @@ const BookFlightPage = ({ destination, username }) => {
 
 ## The `redux-thunk` way
 
-`redux-thunk` is a popular library that manages async jobs in Redux. It is a middleware that allows you to dispatch async actions. It is a good option because it is easy to use.
+WIP
 
 # Typescript
 
-async-jobs fully supports Typescript.
+`async-jobs` fully supports Typescript. Autocompletion will help you get things right.
+For more, please see full API reference.
 
 # Full API Reference
 
-## `createJob`
-
-Makes a 'create async job' action.
-
-```ts
-export const createJob: CreateOrStartJobActionCreator<
-  AsyncJobActions.CREATE
-> = ({
-  id = nanoid(),
-  name,
-  payload,
-}) => ({
-  id,
-  name,
-  payload,
-  type: asyncActionTypeCreator(AsyncJobActions.CREATE, name),
-})
-```
-
-## `
+WIP
