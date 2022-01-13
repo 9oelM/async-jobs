@@ -1,6 +1,6 @@
 {
   "name": "@async-jobs/website",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "repository": "https://github.com/9oelM/async-jobs.git",
   "author": "9oelM <hj923@hotmail.com>",

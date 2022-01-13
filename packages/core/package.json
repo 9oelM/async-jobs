@@ -1,9 +1,12 @@
 {
   "name": "@async-jobs/core",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "test": "jest --config ./jest/jest.config.ts",
     "dev": "tsc --watch --project ./tsconfig.json",
@@ -18,8 +21,10 @@
     "jobs",
     "promise"
   ],
+  "repository": "https://github.com/9oelM/async-jobs.git",
   "author": "9oelM <hj923@hotmail.com>",
   "license": "MIT",
+  "private": false,
   "dependencies": {
     "nanoid": "^3.1.30"
   },
