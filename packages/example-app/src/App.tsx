@@ -14,7 +14,11 @@ export const App = () => {
   }, [])
 
   return (
-    <main style={pickStyles(`bgPink`, `fullWH`, `smallPadding`)}>
+    <main
+      style={{
+        ...pickStyles(`bgPink`, `fullW`, `smallPadding`),
+      }}
+    >
       <h1
         style={{
           ...pickStyles(`colorBrown`, `largeFontSize`, `fullW`),
@@ -47,8 +51,13 @@ export const App = () => {
             target="_blank"
             rel="noreferrer"
           >
-            the repository for recipes
+            the repository for recipes for the use with:
           </a>
+          <ul>
+            <li>Redux</li>
+            <li>Recoil</li>
+            <li>Vanilla javascript</li>
+          </ul>
         </p>
       </div>
     </main>
