@@ -43,20 +43,23 @@ export const App = () => {
         <WithRedux />
       </Provider>
       <div style={pickStyles(`mediumMargin`)}>
-        <h2 style={pickStyles(`colorBrown`, `mediumFontSize`)}>Recipes</h2>
-        <p>
+        <h2 style={pickStyles(`colorBrown`, `mediumFontSize`)}>
+          Recipes & API
+        </h2>
+        <div style={pickStyles(`mediumMargin`)} />
+        <p style={pickStyles(`colorBrown`)}>
           Visit{` `}
           <a
             href="https://github.com/9oelM/async-jobs#readme"
             target="_blank"
             rel="noreferrer"
           >
-            the repository for recipes for the use with:
+            the repository for the recipes and APIs covering:
           </a>
           <ul>
-            <li>Redux</li>
-            <li>Recoil</li>
-            <li>Vanilla javascript</li>
+            <li style={pickStyles(`colorBrown`)}>Redux</li>
+            <li style={pickStyles(`colorBrown`)}>Recoil</li>
+            <li style={pickStyles(`colorBrown`)}>Vanilla javascript</li>
           </ul>
         </p>
       </div>

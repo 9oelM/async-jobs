@@ -104,7 +104,8 @@ export const WithRedux = enhance(() => {
           Track, manage, access all async jobs
         </li>
         <li style={pickStyles(`colorBrown`)}>
-          Best used for multiple, long running, error-prone jobs
+          Best used for multiple, long running, error-prone jobs (network
+          requests, web workers, etc.)
         </li>
         <li style={pickStyles(`colorBrown`)}>
           Strictly typed everywhere with Typescript
@@ -112,7 +113,15 @@ export const WithRedux = enhance(() => {
         <li style={pickStyles(`colorBrown`)}>
           Check network panel in devtools and compare with the chart below
         </li>
-        <button onClick={replayJobs} disabled={isAnyRequestStillLoading}>
+        <button
+          onClick={replayJobs}
+          disabled={isAnyRequestStillLoading}
+          style={
+            isAnyRequestStillLoading
+              ? pickStyles(`colorBrown`, `smallPadding`)
+              : pickStyles(`colorBrown`, `smallPadding`, `cursorPointer`)
+          }
+        >
           Replay jobs
         </button>
       </ul>
