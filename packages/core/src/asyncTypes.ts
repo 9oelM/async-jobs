@@ -1,24 +1,50 @@
 import { nanoid } from "nanoid"
 
 // https://github.com/krzkaczor/ts-essentials/blob/53e73d56cccb8585a84c431e0c8558ed1f440dfe/lib/types.ts#L392
+/**
+ * @ignore
+ */
 type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> &
   Required<Pick<T, RK>>
 
+/**
+ * Represents the status of an async job.
+ */
 export enum AsyncStatus {
   /**
-   * @description when the Job has been first made
-   * and the actual async Job has not been started
+   * @description when the job has been first made
+   * and the actual async job has not been started.
+   *
+   * for example, you could have a network request
+   * scheduled to be sent after one minute later.
+   * in that case, you would want to create it first,
+   * and then fire it later.
    */
   CREATED = `CREATED`,
+  /**
+   * @description when an async job is started and waiting for the result.
+   */
   PENDING = `PENDING`,
+  /**
+   * @description when an async job is successful.
+   */
   SUCCESS = `SUCCESS`,
+  /**
+   * @description when an async job is failed.
+   */
   FAILURE = `FAILURE`,
+  /**
+   * @description when an async job is cancelled.
+   */
   CANCELLED = `CANCELLED`,
 }
 
+/**
+ * Information about an async job. Every single async job will have this information available.
+ */
 export type AsyncMeta<RequestName extends string, Err = Error> = {
   /**
-   * @description the unique id of a Job.
+   * @description the unique id of an async job.
    * Many jobs can have the same name, but not the same id.
    */
   id: ReturnType<typeof nanoid>
@@ -28,13 +54,14 @@ export type AsyncMeta<RequestName extends string, Err = Error> = {
    */
   error?: Err
   /**
-   * @description The name of a specific Job.
+   * @description The name of a specific async job.
    * @example `DELETE_USER`
-   * @warning a Job name should be unique across your application.
+   * @warning an async job name should be unique across your application.
    */
   name: RequestName
   /**
-   * time at which each action of the Job took place
+   * time at which each action of the async job took place.
+   * not all timestamps will be available because not all actions need to be dispatched.
    */
   timestamp: {
     [AsyncStatus.CREATED]?: number
@@ -45,25 +72,58 @@ export type AsyncMeta<RequestName extends string, Err = Error> = {
   }
 }
 
+/**
+ * Represents the action that can be done on an async job.
+ */
 export enum AsyncJobActions {
+  /**
+   * @description when the job has been first made
+   * and the actual async job has not been started.
+   *
+   * for example, you could have a network request
+   * scheduled to be sent after one minute later.
+   * In that case, you would want to create it first,
+   * and then fire it later.
+   */
   CREATE = `CREATE`,
+  /**
+   * @description when an async job is started.
+   */
   START = `START`,
+  /**
+   * @description when an async job is completed successfully.
+   */
   SUCCEED = `SUCCEED`,
+  /**
+   * @description when an async job is completed unsuccessfully.
+   */
   FAIL = `FAIL`,
+  /**
+   * @description when an async job is cancelled.
+   */
   CANCEL = `CANCEL`,
   /**
-   * @description used to remove the Job from reducer.
+   * @description used to remove an async job from the store.
    */
   REMOVE = `REMOVE`,
 }
 
+/**
+ * @ignore
+ */
 export const ASYNC_JOBS_PREFIX = `@AJ` as const
 
+/**
+ * @ignore
+ */
 export type ActionTypeCreator<
   JobAction extends AsyncJobActions,
   JobName extends string
 > = `${typeof ASYNC_JOBS_PREFIX}/${JobAction}/${JobName}`
 
+/**
+ * @ignore
+ */
 export const asyncActionTypeCreator: <
   JobAction extends AsyncJobActions,
   JobName extends string
@@ -73,6 +133,9 @@ export const asyncActionTypeCreator: <
 ) => ActionTypeCreator<JobAction, JobName> = (jobAction, name) =>
   `${ASYNC_JOBS_PREFIX}/${jobAction}/${name}`
 
+/**
+ * @ignore
+ */
 export type AsyncJobParams<JobName extends string, Payload> = Pick<
   AsyncMeta<JobName>,
   `name`
@@ -81,6 +144,9 @@ export type AsyncJobParams<JobName extends string, Payload> = Pick<
     payload?: Payload | undefined
   }
 
+/**
+ * @ignore
+ */
 export type AsyncJobReturns<JobName extends string, Payload> =
   | Pick<AsyncMeta<JobName>, `id` | `name`> &
       (Payload extends undefined | never
@@ -91,6 +157,7 @@ export type AsyncJobReturns<JobName extends string, Payload> =
           })
 
 /**
+ * @ignore
  * @description used to create `createJob` and `startJob` actions.
  */
 export type CreateOrStartJobActionCreator<JobAction extends AsyncJobActions> = <
@@ -103,6 +170,7 @@ export type CreateOrStartJobActionCreator<JobAction extends AsyncJobActions> = <
 }
 
 /**
+ * @ignore
  * @description same as {@link CreateOrStartJobActionCreator} but
  * eagerly requires three generic arguments
  */
@@ -118,7 +186,8 @@ export type CreateOrStartJobActionEagerCreator<
 }
 
 /**
- * used to create Job actions for
+ * @ignore
+ * used to create async job actions for
  * succeed, fail, cancel and remove actions
  */
 export type GeneralJobActionCreator<JobAction extends AsyncJobActions> = <
@@ -131,6 +200,7 @@ export type GeneralJobActionCreator<JobAction extends AsyncJobActions> = <
 }
 
 /**
+ * @ignore
  * @description same as {@link GeneralJobActionCreator} but
  * eagerly requires three generic arguments
  */
@@ -148,9 +218,9 @@ export type GeneralJobActionEagerCreator<
  * @description checks if an action is a specific type
  * @example
  * ```
- * const action = createJob({ name: `YOUTUBE_LITE`, payload: { is: `awesome` } })
- * if (isSpecificAsyncActionType(action, AsyncJobActions.CREATE, `YOUTUBE_LITE`)) {
- *  console.log(action.type === `@RA/CREATE/YOUTUBE_LITE`) // true
+ * const action = createJob({ name: `POST_FLIGHT_TICKET`, payload: { flightId: `123` } })
+ * if (isSpecificAsyncActionType(action, AsyncJobActions.CREATE, `POST_FLIGHT_TICKET`)) {
+ *  console.log(action.type === `@RA/CREATE/POST_FLIGHT_TICKET`) // true
  * }
  * ```
  */
@@ -171,6 +241,9 @@ export function isSpecificAsyncActionType<
   )
 }
 
+/**
+ * @ignore
+ */
 export type CreateOrStartAsyncActionCreatorWithoutNameParameter<
   JobAction extends AsyncJobActions,
   JobName extends string,
@@ -194,6 +267,9 @@ export type CreateOrStartAsyncActionCreatorWithoutNameParameter<
       >
 ) => ReturnType<CreateOrStartJobActionEagerCreator<JobAction, JobName, Payload>>
 
+/**
+ * @ignore
+ */
 export type GeneralAsyncActionCreatorWithoutNameParameter<
   JobAction extends AsyncJobActions,
   JobName extends string,
@@ -217,6 +293,9 @@ export type GeneralAsyncActionCreatorWithoutNameParameter<
       >
 ) => ReturnType<GeneralJobActionEagerCreator<JobAction, JobName, Payload>>
 
+/**
+ * @ignore
+ */
 export type WithAsyncJobsType<
   JobAction extends AsyncJobActions,
   JobName extends string,
@@ -225,6 +304,9 @@ export type WithAsyncJobsType<
   __ASYNC_JOBS_TYPE__: ActionTypeCreator<JobAction, JobName>
 }
 
+/**
+ * @ignore
+ */
 export type GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
   JobAction extends AsyncJobActions,
   JobName extends string,
@@ -235,6 +317,9 @@ export type GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
   GeneralAsyncActionCreatorWithoutNameParameter<JobAction, JobName, Payload>
 >
 
+/**
+ * @ignore
+ */
 export type CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
   JobAction extends AsyncJobActions,
   JobName extends string,
@@ -249,6 +334,9 @@ export type CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsT
   >
 >
 
+/**
+ * @ignore
+ */
 export function getAsyncJobsType<
   ActionCreator extends
     | CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
@@ -273,22 +361,25 @@ export function getAsyncJobsType<
 
 // https://github.com/reduxjs/redux/blob/d794c56f78eccb56ba3c67971c26df8ee34dacc1/src/types/actions.ts#L18
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * @ignore
+ */
 export interface Action<T = any> {
   type: T
 }
 
 /**
- * An Action type which accepts any other properties.
- * This is mainly for the use of the `Reducer` type.
- * This is not part of `Action` itself to prevent types that extend `Action` from
- * having an index signature.
+ * @ignore
  */
 export interface AnyAction extends Action {
   // Allows any extra properties to be defined in an action.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [extraProps: string]: any
 }
-// from redux
+
+/**
+ * @ignore
+ */
 export type Reducer<S = any, A extends Action = AnyAction> = (
   state: S | undefined,
   action: A

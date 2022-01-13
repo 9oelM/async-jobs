@@ -10,10 +10,21 @@ import {
 } from "./asyncTypes"
 
 /**
- * Sometimes you want to create a Job in some time before in advance to sending the actual Job.
- * Use this to create a Job first, and use {@link startJob} to fire the actual Job.
+ * Sometimes you want to create an async job in some time before in advance to sending the actual job.
+ * Use this to create an async job first, and use {@link startJob} to fire the actual job.
  *
- * If you want to immediately fire a Job upon creating it, use {@link startJob} directly instead.
+ * If you want to immediately fire an async job upon creating it, use {@link startJob} directly instead.
+ *
+ * @example
+ * ```
+ * dispatch(createJob({
+ *  name: `POST_FLIGHT_TICKET`,
+ *  payload: {
+ *    flightId: 123,
+ *    passengerId: 456,
+ *  }
+ * }))
+ * ```
  */
 export const createJob: CreateOrStartJobActionCreator<
   AsyncJobActions.CREATE
@@ -30,10 +41,10 @@ export const createJob: CreateOrStartJobActionCreator<
 })
 
 /**
- * if you just want to start Job right away without {@link createJob},
- * use this. Perhaps this is the most common action to use it you don't create a Job in advance.
+ * if you just want to start the async job right away without {@link createJob},
+ * use this. Perhaps this is the most common action to use it you don't create an async job in advance.
  *
- * @warning if a new id is supplied and the Job information has been already initiated with {@link createJob},
+ * @warning if a new id is supplied and the async job information has been already initiated with {@link createJob},
  * it will ignore the new id and proceed with the existing id.
  */
 export const startJob: CreateOrStartJobActionCreator<AsyncJobActions.START> = ({
@@ -49,7 +60,7 @@ export const startJob: CreateOrStartJobActionCreator<AsyncJobActions.START> = ({
 })
 
 /**
- * @description call this action when Job is successful
+ * @description call this action when the async job is successful
  */
 export const succeedJob: GeneralJobActionCreator<AsyncJobActions.SUCCEED> = (
   params
@@ -60,16 +71,20 @@ export const succeedJob: GeneralJobActionCreator<AsyncJobActions.SUCCEED> = (
 })
 
 /**
- * @param params.payload insert error object in payload
+ * @description call this action when the async job is failed
+ * @param params insert error object in params.payload
  */
-// @ts-ignore
 export const failJob: GeneralJobActionCreator<AsyncJobActions.FAIL> = (
   params
+  // @ts-ignore
 ) => ({
   ...params,
   type: asyncActionTypeCreator(AsyncJobActions.FAIL, params.name),
 })
 
+/**
+ * @description call this action to cancel an async job
+ */
 export const cancelJob: GeneralJobActionCreator<AsyncJobActions.CANCEL> = (
   params
   // @ts-ignore
@@ -78,6 +93,9 @@ export const cancelJob: GeneralJobActionCreator<AsyncJobActions.CANCEL> = (
   type: asyncActionTypeCreator(AsyncJobActions.CANCEL, params.name),
 })
 
+/**
+ * @description remove an async job from the store
+ */
 export const removeJob: GeneralJobActionCreator<AsyncJobActions.REMOVE> = (
   params
   // @ts-ignore
@@ -87,7 +105,8 @@ export const removeJob: GeneralJobActionCreator<AsyncJobActions.REMOVE> = (
 })
 
 /**
- *
+ * It's a common pattern that most async jobs are created, started, and succeed, fail, or get cancelled.
+ * This is a helper function to create all of the actions ({@link createJob}, {@link startJob}, {@link succeedJob}, {@link failJob}, {@link cancelJob}, and {@link removeJob}) about a single async job at once.
  * @param jobName The job name. For example, `LOGIN`.
  * @returns set of all async job action creators: `create`, `start`, `succeed`, `fail`, `cancel`, `remove`.
  *
@@ -97,7 +116,7 @@ export const removeJob: GeneralJobActionCreator<AsyncJobActions.REMOVE> = (
  *  FLIGHT_TICKET_REQUEST = `FLIGHT_TICKET_REQUEST`
  * }
  *
- * const flightTicketRequestJobSet = createJobSet<
+ * const postFlightTicketJobSet = createJobSet<
  *  JobNames.FLIGHT_TICKET_REQUEST,
  *  never,
  *  {
@@ -121,7 +140,7 @@ export const removeJob: GeneralJobActionCreator<AsyncJobActions.REMOVE> = (
  *  const dispatch = useDispatch();
  *
  *  return <Button
- *    onClick={() => dispatch(flightTicketRequestJobSet.start({
+ *    onClick={() => dispatch(postFlightTicketJobSet.start({
  *      departureFromHomeDate: new Date(`2021/03/03`),
  *      departureFromDestinationDate: new Date(`2021/03/08`),
  *      home: `Seoul`,
@@ -135,8 +154,8 @@ export const removeJob: GeneralJobActionCreator<AsyncJobActions.REMOVE> = (
  * // then in redux saga
  * import { getType } from 'typesafe-actions'
  *
- * yield takeLatest(getType(flightTicketRequestJobSet.start), function *(action: ActionType<typeof flightTicketRequestJobSet.start>){
- *   const result = yield call(() => window.fetch('flighttickets.com'));
+ * yield takeLatest(getType(postFlightTicketJobSet.start), function *(action: ActionType<typeof postFlightTicketJobSet.start>){
+ *   const result = yield call(() => window.fetch('flighttickets.com', { method: `POST` }));
  *   ...
  * })
  * ```

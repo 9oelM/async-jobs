@@ -9,7 +9,9 @@
     "dev": "tsc --watch --project ./tsconfig.json",
     "tsc": "tsc --project ./tsconfig.json",
     "minify": "bash minify.sh",
-    "package": "npm run tsc && npm run minify"
+    "package": "npm run tsc && npm run minify",
+    "docs:generate": "typedoc src/index.ts",
+    "docs:watch": "typedoc --watch src/index.ts"
   },
   "keywords": [
     "async",
@@ -30,6 +32,7 @@
     "ts-jest": "^27.1.2",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
+    "typedoc": "^0.22.10",
     "typescript": "^4.5.4"
   }
 }

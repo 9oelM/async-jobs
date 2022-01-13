@@ -9,10 +9,29 @@ import {
 import { asyncReducerErrorReporter } from "./asyncReducerErrors"
 import { Reducer } from "."
 
+/**
+ * @ignore
+ */
 export type AsyncReducerState = {
   asyncJobs: Record<string, AsyncMeta<string, Error>>
 }
 
+/**
+ * A reducer that handles various types of async actions, and returns a new state accordingly.
+ * Just needs to be plugged into `createStore` as a reducer.
+ *
+ * @example
+ * ```
+ * import { asyncReducer } from "@async-jobs/core"
+ * import { createStore, combineReducers } from "redux"
+ *
+ * export const store = createStore(
+ *   combineReducers({
+ *     async: asyncReducer,
+ *   })
+ * )
+ * ```
+ */
 export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
   state = { asyncJobs: {} },
   action
@@ -164,6 +183,9 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
   return state
 }
 
+/**
+ * @ignore
+ */
 function isAsyncActionType<JobAction extends AsyncJobActions>(
   action: Record<string | number | symbol, any> & {
     type: string

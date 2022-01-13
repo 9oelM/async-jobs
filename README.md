@@ -228,4 +228,27 @@ const BookFlightPage = ({ destination, username }) => {
 
 # Typescript
 
+async-jobs fully supports Typescript.
+
 # Full API Reference
+
+## `createJob`
+
+Makes a 'create async job' action.
+
+```ts
+export const createJob: CreateOrStartJobActionCreator<
+  AsyncJobActions.CREATE
+> = ({
+  id = nanoid(),
+  name,
+  payload,
+}) => ({
+  id,
+  name,
+  payload,
+  type: asyncActionTypeCreator(AsyncJobActions.CREATE, name),
+})
+```
+
+## `

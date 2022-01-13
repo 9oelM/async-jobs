@@ -19,7 +19,7 @@ export type AsyncJobSelectorOptions = {
   /**
    * @default `true`
    * @description when there multiple requests and this option is supplied as `false`,
-   * it will compare all async jobs that do not have the status of {@link compareTimestmp}.
+   * it will compare all async jobs that do not have the status of {@link compareTimestamp}.
    *
    * For example, if there are two existing async jobs in the reducer, like:
    *
@@ -85,6 +85,9 @@ type LatestOrEarliestAsyncJobSelector = <
   { name, compareTimestamp, onlyCurrentStatus }: AsyncJobSelectorOptions
 ) => AsyncMeta<string, AppError> | undefined
 
+/**
+ * @ignore
+ */
 export function createLatestOrEarliestAsyncJobByNameSelector(
   time: `earliest` | `latest`
 ): LatestOrEarliestAsyncJobSelector {
@@ -142,13 +145,34 @@ export function createLatestOrEarliestAsyncJobByNameSelector(
   }
 }
 
-export const createLatestAsyncJobByNameSelector =
-  createLatestOrEarliestAsyncJobByNameSelector(`latest`)
-export const createEarliestAsyncJobByNameSelector =
-  createLatestOrEarliestAsyncJobByNameSelector(`earliest`)
+/**
+ * A selector that selects the latest async job based on the supplied name and timestamp.
+ *
+ * @example
+ * ```
+ * const latestBookFlightTicketJob = useSelector((s) => latestAsyncJobByNameSelector({
+ *  name: `POST_BOOK_FLIGHT_TICKET`,
+ *  compareTimestamp: AsyncStatus.PENDING,
+ * }))
+ *
+ * if (latestBookFlightTicketJob.status === AsyncStatus.PENDING) {
+ *   return <div>Booking flight...</div>
+ * }
+ * ```
+ *
+ * @returns {@link AsyncMeta} if a matching job was found, and `undefined` if no matching job was found
+ */
+export const latestAsyncJobByNameSelector =
+  createLatestOrEarliestAsyncJobByNameSelector(`latest`)()
 
 /**
- *
+ * A selector that selects the earliest async job based on the supplied name and timestamp.
+ */
+export const earliestAsyncJobByNameSelector =
+  createLatestOrEarliestAsyncJobByNameSelector(`earliest`)()
+
+/**
+ * Finds an async job by its id.
  * @param s the root redux state of your application
  * @param id the id of async job
  * @returns `undefined` if no matching job was found
