@@ -8,6 +8,10 @@ _For the paranoids of async jobs in javascript._
 - Usable for both Redux and non-redux applications.
 - Recipes included.
 
+# Demo
+
+https://9oelm.github.io/async-jobs/
+
 # Usage with Redux
 
 Before you begin, you need to create `async` reducer in your existing redux store. This is going to be the single source of truth for all of your async jobs:
@@ -83,7 +87,7 @@ const BookFlightPage = ({ destination, username }) => {
 ```
 
 ## The 'Vanilla Redux middleware' way
-This method uses vanilla redux middleware without any other dependencies like `redux-thunk`. Not so many people will want to use this method, but it is still a good option.
+This method uses vanilla redux middleware without any other dependencies like `redux-thunk`. Not so many people will want to use this method because it is not very much extensible, but it is still a good option.
 
 First, create `postBookFlightTicketMiddleware`:
 
@@ -140,19 +144,20 @@ Now, all you have to do is to subscribe to the redux store in your component:
 ```js
 import React from 'react'
 import { useDispatch } from 'react-redux'
-
+import { asyncJobByIdSelector } from '@async-jobs/core'
 
 const BookFlightPage = ({ destination, username }) => {
   const dispatch = useDispatch()
-  const currentAsyncJob = useSelector((s) => asyncJobByIdSelector(s, bookFlightTicketStartRequest.current.id))
-  
+  const startPostBookFlightTicketRequest = useRef(postBookFlightTicketJobSet.start({
+    payload: {
+      destination,
+      username,
+    }
+  }))
+  const currentAsyncJob = useSelector((s) => asyncJobByIdSelector(s, startPostBookFlightTicketRequest.current.id))
+
   useEffect(() => {
-    dispatch(postBookFlightTicketJobSet.start({
-      payload: {
-        destination,
-        username,
-      }
-    }))
+    dispatch(startPostBookFlightTicketRequest)
   }, [])
   
   return <div>{(() => {
@@ -172,6 +177,54 @@ const BookFlightPage = ({ destination, username }) => {
 }
 ```
 
+Note that in some cases you may not even need to reference the async job id. All you need to know is the name of the async job. Using `createLatestAsyncJobByNameSelector` will do, like so:
+
+```js
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { createLatestAsyncJobByNameSelector } from "@async-jobs/core";
+
+const latestAsyncJobByNameSelector = createLatestAsyncJobByNameSelector()
+
+// look at how clean we've become regarding the side effects
+const BookFlightPage = ({ destination, username }) => {
+  const dispatch = useDispatch()
+  const currentAsyncJob = useSelector((s) => latestAsyncJobByNameSelector(s, {
+    name: AsyncJobNames.POST_BOOK_FLIGHT_TICKET,
+  }))
+
+  useEffect(() => {
+    dispatch(postBookFlightTicketJobSet.start({
+      payload: {
+        destination,
+        username,
+      }
+    }))
+  }, [
+    destination,
+    username,
+  ])
+  
+  return <div>{(() => {
+    switch (currentAsyncJob.status) {
+      case AsyncJobStatus.PENDING:
+        return <div>Pending</div>
+      case AsyncJobStatus.SUCCESS:
+        return <div>Success</div>
+      case AsyncJobStatus.FAIL:
+        return <div>Failed</div>
+      case AsyncJobStatus.CANCELED:
+        return <div>Canceled</div>
+      default:
+        return <div>Unknown</div>
+    }
+  })()}</div>
+}
+```
+
+## The `redux-thunk` way
+
+`redux-thunk` is a popular library that manages async jobs in Redux. It is a middleware that allows you to dispatch async actions. It is a good option because it is easy to use.
 
 # Typescript
 
