@@ -9,35 +9,35 @@ const name = `SEARCH_GOOGLE`
 const name2 = `SEARCH_DUCKDUCKGO`
 const a: AsyncMeta<typeof name, Error> = {
   id: `A`,
-  status: AsyncStatus.LOADING,
+  status: AsyncStatus.PENDING,
   name,
   timestamp: {
-    [AsyncStatus.LOADING]: 1,
+    [AsyncStatus.PENDING]: 1,
   },
 }
 const b: AsyncMeta<typeof name, Error> = {
   id: `B`,
-  status: AsyncStatus.LOADING,
+  status: AsyncStatus.PENDING,
   name,
   timestamp: {
-    [AsyncStatus.LOADING]: 2,
+    [AsyncStatus.PENDING]: 2,
   },
 }
 const c: AsyncMeta<typeof name, Error> = {
   id: `C`,
-  status: AsyncStatus.LOADING,
+  status: AsyncStatus.PENDING,
   name,
   timestamp: {
     [AsyncStatus.CREATED]: 3,
-    [AsyncStatus.LOADING]: 3,
+    [AsyncStatus.PENDING]: 3,
   },
 }
 const d: AsyncMeta<typeof name, Error> = {
   id: `D`,
-  status: AsyncStatus.LOADING,
+  status: AsyncStatus.PENDING,
   name,
   timestamp: {
-    [AsyncStatus.LOADING]: 4,
+    [AsyncStatus.PENDING]: 4,
   },
 }
 const e: AsyncMeta<typeof name2, Error> = {
@@ -45,7 +45,7 @@ const e: AsyncMeta<typeof name2, Error> = {
   status: AsyncStatus.CANCELLED,
   name: name2,
   timestamp: {
-    [AsyncStatus.LOADING]: 4,
+    [AsyncStatus.PENDING]: 4,
     [AsyncStatus.CANCELLED]: 5,
   },
 }
@@ -55,7 +55,7 @@ const f: AsyncMeta<typeof name, Error> = {
   name,
   timestamp: {
     [AsyncStatus.CREATED]: 1,
-    [AsyncStatus.LOADING]: 4,
+    [AsyncStatus.PENDING]: 4,
     [AsyncStatus.SUCCESS]: 5,
   },
 }
@@ -65,7 +65,7 @@ const g: AsyncMeta<typeof name, Error> = {
   name,
   timestamp: {
     [AsyncStatus.CREATED]: 3,
-    [AsyncStatus.LOADING]: 7,
+    [AsyncStatus.PENDING]: 7,
     [AsyncStatus.FAILURE]: 10,
   },
 }
@@ -75,7 +75,7 @@ const h: AsyncMeta<typeof name2, Error> = {
   name: name2,
   timestamp: {
     [AsyncStatus.CREATED]: 10,
-    [AsyncStatus.LOADING]: 11,
+    [AsyncStatus.PENDING]: 11,
   },
 }
 
@@ -104,7 +104,7 @@ describe(`createLatestOrEarliestAsyncJobByNameSelector`, () => {
   it(`should compare time by earliest if time was specified as earliest`, () => {
     const result = earliestAsyncJobByNameSelector(mockState, {
       name,
-      compareTimestamp: AsyncStatus.LOADING,
+      compareTimestamp: AsyncStatus.PENDING,
     })
     expect(result).toStrictEqual(a)
   })
@@ -112,7 +112,7 @@ describe(`createLatestOrEarliestAsyncJobByNameSelector`, () => {
   it(`should compare time by latest if time was specified as latest`, () => {
     const result = latestAsyncJobByNameSelector(mockState, {
       name,
-      compareTimestamp: AsyncStatus.LOADING,
+      compareTimestamp: AsyncStatus.PENDING,
     })
     expect(result).toStrictEqual(d)
   })
@@ -120,7 +120,7 @@ describe(`createLatestOrEarliestAsyncJobByNameSelector`, () => {
   it(`should also include job of which status is not equal to compareTimestamp if onlyCurrentStatus option is supplied as false`, () => {
     const result = latestAsyncJobByNameSelector(mockState, {
       name,
-      compareTimestamp: AsyncStatus.LOADING,
+      compareTimestamp: AsyncStatus.PENDING,
       onlyCurrentStatus: false,
     })
     expect(result).toStrictEqual(g)
@@ -128,7 +128,7 @@ describe(`createLatestOrEarliestAsyncJobByNameSelector`, () => {
   it(`should select different names of async jobs`, () => {
     const result = earliestAsyncJobByNameSelector(mockState, {
       name: name2,
-      compareTimestamp: AsyncStatus.LOADING,
+      compareTimestamp: AsyncStatus.PENDING,
       onlyCurrentStatus: false,
     })
     expect(result).toStrictEqual(e)
@@ -136,11 +136,11 @@ describe(`createLatestOrEarliestAsyncJobByNameSelector`, () => {
   it(`should return undefined if no job of matching name is found`, () => {
     const result = earliestAsyncJobByNameSelector(mockState, {
       name: `NO_MATCHING_NAME`,
-      compareTimestamp: AsyncStatus.LOADING,
+      compareTimestamp: AsyncStatus.PENDING,
     })
     const result2 = earliestAsyncJobByNameSelector(mockState, {
       name: `NO_MATCHING_NAME`,
-      compareTimestamp: AsyncStatus.LOADING,
+      compareTimestamp: AsyncStatus.PENDING,
       onlyCurrentStatus: false,
     })
     expect(result).toBeUndefined()

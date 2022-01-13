@@ -3,7 +3,7 @@ import {
   AsyncMeta,
   AsyncStatus,
   GeneralJobActionEagerCreator,
-  JobActions,
+  AsyncJobActions,
   ASYNC_JOBS_PREFIX,
 } from "./asyncTypes"
 import { asyncReducerErrorReporter } from "./asyncReducerErrors"
@@ -17,7 +17,7 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
   state = { asyncJobs: {} },
   action
 ) => {
-  if (isAsyncActionType(action, JobActions.CREATE)) {
+  if (isAsyncActionType(action, AsyncJobActions.CREATE)) {
     if (action.id in state.asyncJobs) {
       asyncReducerErrorReporter.jobExistsOnCreate.describe(action)
       return state
@@ -37,7 +37,7 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
         },
       },
     }
-  } else if (isAsyncActionType(action, JobActions.START)) {
+  } else if (isAsyncActionType(action, AsyncJobActions.START)) {
     if (action.id in state.asyncJobs) {
       // for typescript to understand the type correctly
       const maybeUndefinedJob = state.asyncJobs[action.id]
@@ -46,9 +46,9 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
       const job = {
         ...maybeUndefinedJob,
       }
-      job.status = AsyncStatus.LOADING
+      job.status = AsyncStatus.PENDING
       job.timestamp = { ...job.timestamp }
-      job.timestamp[AsyncStatus.LOADING] = Date.now()
+      job.timestamp[AsyncStatus.PENDING] = Date.now()
       return {
         ...state,
         asyncJobs: {
@@ -65,15 +65,15 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
         ...state.asyncJobs,
         [action.id]: {
           id: action.id,
-          status: AsyncStatus.LOADING,
+          status: AsyncStatus.PENDING,
           name: action.name,
           timestamp: {
-            [AsyncStatus.LOADING]: Date.now(),
+            [AsyncStatus.PENDING]: Date.now(),
           },
         },
       },
     }
-  } else if (isAsyncActionType(action, JobActions.FAIL)) {
+  } else if (isAsyncActionType(action, AsyncJobActions.FAIL)) {
     if (!(action.id in state.asyncJobs)) {
       asyncReducerErrorReporter.jobDoesNotExistError.describe(action)
       return state
@@ -98,7 +98,7 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
         [action.id]: job,
       },
     }
-  } else if (isAsyncActionType(action, JobActions.REMOVE)) {
+  } else if (isAsyncActionType(action, AsyncJobActions.REMOVE)) {
     if (!(action.id in state.asyncJobs)) {
       asyncReducerErrorReporter.jobDoesNotExistWarning.describe(action)
       return state
@@ -111,7 +111,7 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
       ...state,
       asyncJobs,
     }
-  } else if (isAsyncActionType(action, JobActions.CANCEL)) {
+  } else if (isAsyncActionType(action, AsyncJobActions.CANCEL)) {
     if (!(action.id in state.asyncJobs)) {
       asyncReducerErrorReporter.jobDoesNotExistWarning.describe(action)
       return state
@@ -135,7 +135,7 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
         [action.id]: job,
       },
     }
-  } else if (isAsyncActionType(action, JobActions.SUCCEED)) {
+  } else if (isAsyncActionType(action, AsyncJobActions.SUCCEED)) {
     if (!(action.id in state.asyncJobs)) {
       asyncReducerErrorReporter.jobDoesNotExistError.describe(action)
       return state
@@ -164,7 +164,7 @@ export const asyncReducer: Reducer<AsyncReducerState, AnyAction> = (
   return state
 }
 
-function isAsyncActionType<JobAction extends JobActions>(
+function isAsyncActionType<JobAction extends AsyncJobActions>(
   action: Record<string | number | symbol, any> & {
     type: string
   },

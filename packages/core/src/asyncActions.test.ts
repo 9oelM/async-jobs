@@ -2,7 +2,7 @@ import { createJob, createJobSet, startJob } from "./asyncActions"
 import {
   asyncActionTypeCreator,
   CreateOrStartJobActionCreator,
-  JobActions,
+  AsyncJobActions,
 } from "./asyncTypes"
 
 enum AllJobNames {
@@ -51,7 +51,7 @@ describe(`createJobSet`, () => {
           name: `jo jo jo`,
         },
       }),
-      jobAction: JobActions.CREATE,
+      jobAction: AsyncJobActions.CREATE,
       jobName: AllJobNames.LOGIN,
     },
     {
@@ -60,14 +60,14 @@ describe(`createJobSet`, () => {
           oAuthToken: `woigioghaiogoi3goi3iogah3ogh32hg32ohg32oh3o2gh`,
         },
       }),
-      jobAction: JobActions.START,
+      jobAction: AsyncJobActions.START,
       jobName: AllJobNames.LOGIN,
     },
     {
       action: loginAsyncJobs.succeed({
         id: `aoiroihof32oifho-13f`,
       }),
-      jobAction: JobActions.SUCCEED,
+      jobAction: AsyncJobActions.SUCCEED,
       jobName: AllJobNames.LOGIN,
     },
     {
@@ -77,7 +77,7 @@ describe(`createJobSet`, () => {
           previousOAuthToken: `woigioghaiogoi3goi3iogah3ogh32hg32ohg32oh3o2gh`,
         },
       }),
-      jobAction: JobActions.CANCEL,
+      jobAction: AsyncJobActions.CANCEL,
       jobName: AllJobNames.LOGIN,
     },
     {
@@ -85,14 +85,14 @@ describe(`createJobSet`, () => {
         id: `awjefoiwejfioajewf g4g2q332g`,
         payload: new Error(`errorro`),
       }),
-      jobAction: JobActions.FAIL,
+      jobAction: AsyncJobActions.FAIL,
       jobName: AllJobNames.LOGIN,
     },
     {
       action: loginAsyncJobs.remove({
         id: `awjefoiwejfioajewf g4g2q332g`,
       }),
-      jobAction: JobActions.REMOVE,
+      jobAction: AsyncJobActions.REMOVE,
       jobName: AllJobNames.LOGIN,
     },
   ])(
@@ -108,44 +108,46 @@ describe(`createJobSet`, () => {
 
 describe(`createJob`, () => {
   it(`creates an action containing expected properties`, () => {
-    const params: Parameters<CreateOrStartJobActionCreator<JobActions.CREATE>> =
-      [
-        {
-          id: `awefawefeawfewfawe`,
-          name: `TEST`,
-          payload: {
-            haha: `haha`,
-          },
+    const params: Parameters<
+      CreateOrStartJobActionCreator<AsyncJobActions.CREATE>
+    > = [
+      {
+        id: `awefawefeawfewfawe`,
+        name: `TEST`,
+        payload: {
+          haha: `haha`,
         },
-      ]
+      },
+    ]
     expect(createJob(...params)).toStrictEqual({
       ...params[0],
-      type: asyncActionTypeCreator(JobActions.CREATE, `TEST`),
+      type: asyncActionTypeCreator(AsyncJobActions.CREATE, `TEST`),
     })
   })
 })
 
 describe(`startJob`, () => {
   it(`creates an action containing expected properties`, () => {
-    const params: Parameters<CreateOrStartJobActionCreator<JobActions.CREATE>> =
-      [
-        {
-          id: `awefawefeawfewfawe2222`,
-          name: `TEST22`,
-          payload: {
-            haha: `haha`,
-            afewijwef: 1,
-            waefjwlkf: {
-              fawefawefio3: 1,
-              faw4eoifhio: `89o31h`,
-              fwefa: false,
-            },
+    const params: Parameters<
+      CreateOrStartJobActionCreator<AsyncJobActions.CREATE>
+    > = [
+      {
+        id: `awefawefeawfewfawe2222`,
+        name: `TEST22`,
+        payload: {
+          haha: `haha`,
+          afewijwef: 1,
+          waefjwlkf: {
+            fawefawefio3: 1,
+            faw4eoifhio: `89o31h`,
+            fwefa: false,
           },
         },
-      ]
+      },
+    ]
     expect(startJob(...params)).toStrictEqual({
       ...params[0],
-      type: asyncActionTypeCreator(JobActions.START, `TEST22`),
+      type: asyncActionTypeCreator(AsyncJobActions.START, `TEST22`),
     })
   })
 })

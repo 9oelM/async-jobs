@@ -75,14 +75,14 @@ export const WithRedux = enhance(() => {
   const allAsyncJobIds = useTypedSelector((s) =>
     Object.values(s.async.asyncJobs).map(({ id }) => id)
   )
-  const isAnyRequestStillLoading = useTypedSelector((s) =>
+  const isAnyRequestStillPENDING = useTypedSelector((s) =>
     Object.values(s.async.asyncJobs).some(
-      ({ status }) => status === AsyncStatus.LOADING
+      ({ status }) => status === AsyncStatus.PENDING
     )
   )
   const dispatch = useDispatch()
   const replayJobs = useCallback(() => {
-    if (isAnyRequestStillLoading) return
+    if (isAnyRequestStillPENDING) return
     batch(() => {
       allAsyncJobIds.forEach((id) => {
         dispatch(exampleApiJobSet.remove({ id }))
@@ -92,7 +92,7 @@ export const WithRedux = enhance(() => {
     setTimeout(() => {
       setRunAgain((runAgain) => runAgain + 1)
     }, 100)
-  }, [allAsyncJobIds, isAnyRequestStillLoading])
+  }, [allAsyncJobIds, isAnyRequestStillPENDING])
 
   return (
     <article style={pickStyles(`mediumMargin`)}>
@@ -115,9 +115,9 @@ export const WithRedux = enhance(() => {
         </li>
         <button
           onClick={replayJobs}
-          disabled={isAnyRequestStillLoading}
+          disabled={isAnyRequestStillPENDING}
           style={
-            isAnyRequestStillLoading
+            isAnyRequestStillPENDING
               ? pickStyles(`colorBrown`, `smallPadding`)
               : pickStyles(`colorBrown`, `smallPadding`, `cursorPointer`)
           }

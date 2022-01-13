@@ -8,8 +8,8 @@ export type AsyncJobSelectorOptions = {
   name: string
   /**
    * @description timestamp of requests of the same name to be compared.
-   * defaults to {@link AsyncStatus.LOADING}, which means
-   * the timestamp that was recorded when the request turned LOADING (easily said, the async job started)
+   * defaults to {@link AsyncStatus.PENDING}, which means
+   * the timestamp that was recorded when the request turned PENDING (easily said, the async job started)
    * will be compared.
    *
    * if some of the requests contain no timetstamp of matching criteria at all,
@@ -34,16 +34,16 @@ export type AsyncJobSelectorOptions = {
    *          name: 'TEST',
    *          timestamp: {
    *            [AsyncStatus.CREATED]: 10,
-   *            [AsyncStatus.LOADING]: 11,
+   *            [AsyncStatus.PENDING]: 11,
    *            [AsyncStatus.FAILURE]: 12,
    *          },
    *      },
    *     '2': {
    *         id: `2`,
-   *          status: AsyncStatus.LOADING,
+   *          status: AsyncStatus.PENDING,
    *          name: 'TEST',
    *          timestamp: {
-   *            [AsyncStatus.LOADING]: 4,
+   *            [AsyncStatus.PENDING]: 4,
    *          },
    *      }
    *   }
@@ -56,11 +56,11 @@ export type AsyncJobSelectorOptions = {
    * const latestAsyncJobByNameSelector =
    *  createLatestAsyncJobByNameSelector()
    *
-   * const asyncJob = latestAsyncJobByNameSelector(state, `TEST`, AsyncStatus.LOADING, false);
+   * const asyncJob = latestAsyncJobByNameSelector(state, `TEST`, AsyncStatus.PENDING, false);
    * ```
    *
    * then, `asyncJob` will be the job of id `1`, not `2`
-   * because it also looks over the job that does not have the status of `AsyncStatus.LOADING`.
+   * because it also looks over the job that does not have the status of `AsyncStatus.PENDING`.
    *
    */
   onlyCurrentStatus?: boolean
@@ -101,7 +101,7 @@ export function createLatestOrEarliestAsyncJobByNameSelector(
   ) => undefined | AsyncMeta<string, AppError> {
     return (
       s,
-      { name, compareTimestamp = AsyncStatus.LOADING, onlyCurrentStatus = true }
+      { name, compareTimestamp = AsyncStatus.PENDING, onlyCurrentStatus = true }
     ) => {
       const asyncJobsInArray = Object.values(s.async.asyncJobs)
       let latestOrEarliestAsyncJobIndexWithMatchingName: number | null = null

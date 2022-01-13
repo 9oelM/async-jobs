@@ -19,10 +19,10 @@ const state0: AsyncReducerState = {
   asyncJobs: {
     DIFFERENT_ID: {
       id: `DIFFERENT_ID`,
-      status: AsyncStatus.LOADING,
+      status: AsyncStatus.PENDING,
       name: actionParams.name,
       timestamp: {
-        [AsyncStatus.LOADING]: Date.now(),
+        [AsyncStatus.PENDING]: Date.now(),
       },
     },
   },
@@ -31,10 +31,10 @@ const state1: AsyncReducerState = {
   asyncJobs: {
     [actionParams.id]: {
       id: actionParams.id,
-      status: AsyncStatus.LOADING,
+      status: AsyncStatus.PENDING,
       name: actionParams.name,
       timestamp: {
-        [AsyncStatus.LOADING]: Date.now(),
+        [AsyncStatus.PENDING]: Date.now(),
       },
     },
   },
@@ -66,7 +66,7 @@ describe(`asyncReducer`, () => {
   it.each([
     {
       action: startJob(actionParams),
-      asyncStatus: AsyncStatus.LOADING,
+      asyncStatus: AsyncStatus.PENDING,
     },
     {
       action: failJob(actionParams),

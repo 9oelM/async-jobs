@@ -4,7 +4,7 @@ import {
   CreateOrStartJobActionCreator,
   asyncActionTypeCreator,
   GeneralJobActionCreator,
-  JobActions,
+  AsyncJobActions,
   CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType,
   GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType,
 } from "./asyncTypes"
@@ -15,7 +15,9 @@ import {
  *
  * If you want to immediately fire a Job upon creating it, use {@link startJob} directly instead.
  */
-export const createJob: CreateOrStartJobActionCreator<JobActions.CREATE> = ({
+export const createJob: CreateOrStartJobActionCreator<
+  AsyncJobActions.CREATE
+> = ({
   id = nanoid(),
   name,
   payload,
@@ -24,7 +26,7 @@ export const createJob: CreateOrStartJobActionCreator<JobActions.CREATE> = ({
   id,
   name,
   payload,
-  type: asyncActionTypeCreator(JobActions.CREATE, name),
+  type: asyncActionTypeCreator(AsyncJobActions.CREATE, name),
 })
 
 /**
@@ -34,7 +36,7 @@ export const createJob: CreateOrStartJobActionCreator<JobActions.CREATE> = ({
  * @warning if a new id is supplied and the Job information has been already initiated with {@link createJob},
  * it will ignore the new id and proceed with the existing id.
  */
-export const startJob: CreateOrStartJobActionCreator<JobActions.START> = ({
+export const startJob: CreateOrStartJobActionCreator<AsyncJobActions.START> = ({
   id = nanoid(),
   name,
   payload,
@@ -43,43 +45,45 @@ export const startJob: CreateOrStartJobActionCreator<JobActions.START> = ({
   id,
   name,
   payload,
-  type: asyncActionTypeCreator(JobActions.START, name),
+  type: asyncActionTypeCreator(AsyncJobActions.START, name),
 })
 
 /**
  * @description call this action when Job is successful
  */
-export const succeedJob: GeneralJobActionCreator<JobActions.SUCCEED> = (
+export const succeedJob: GeneralJobActionCreator<AsyncJobActions.SUCCEED> = (
   params
   // @ts-ignore
 ) => ({
   ...params,
-  type: asyncActionTypeCreator(JobActions.SUCCEED, params.name),
+  type: asyncActionTypeCreator(AsyncJobActions.SUCCEED, params.name),
 })
 
 /**
  * @param params.payload insert error object in payload
  */
 // @ts-ignore
-export const failJob: GeneralJobActionCreator<JobActions.FAIL> = (params) => ({
+export const failJob: GeneralJobActionCreator<AsyncJobActions.FAIL> = (
+  params
+) => ({
   ...params,
-  type: asyncActionTypeCreator(JobActions.FAIL, params.name),
+  type: asyncActionTypeCreator(AsyncJobActions.FAIL, params.name),
 })
 
-export const cancelJob: GeneralJobActionCreator<JobActions.CANCEL> = (
+export const cancelJob: GeneralJobActionCreator<AsyncJobActions.CANCEL> = (
   params
   // @ts-ignore
 ) => ({
   ...params,
-  type: asyncActionTypeCreator(JobActions.CANCEL, params.name),
+  type: asyncActionTypeCreator(AsyncJobActions.CANCEL, params.name),
 })
 
-export const removeJob: GeneralJobActionCreator<JobActions.REMOVE> = (
+export const removeJob: GeneralJobActionCreator<AsyncJobActions.REMOVE> = (
   params
   // @ts-ignore
 ) => ({
   ...params,
-  type: asyncActionTypeCreator(JobActions.REMOVE, params.name),
+  type: asyncActionTypeCreator(AsyncJobActions.REMOVE, params.name),
 })
 
 /**
@@ -149,38 +153,38 @@ export function createJobSet<
   jobName: JobName
 ): {
   create: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.CREATE,
+    AsyncJobActions.CREATE,
     JobName,
     CreatePayload
   >
   start: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.START,
+    AsyncJobActions.START,
     JobName,
     StartPayload
   >
   succeed: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.SUCCEED,
+    AsyncJobActions.SUCCEED,
     JobName,
     SucceedPayload
   >
   fail: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.FAIL,
+    AsyncJobActions.FAIL,
     JobName,
     FailPayload
   >
   cancel: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.CANCEL,
+    AsyncJobActions.CANCEL,
     JobName,
     CancelPayload
   >
   remove: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.REMOVE,
+    AsyncJobActions.REMOVE,
     JobName,
     RemovePayload
   >
 } {
   const create: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.CREATE,
+    AsyncJobActions.CREATE,
     JobName,
     CreatePayload
   > = (paramsExceptName) =>
@@ -189,12 +193,12 @@ export function createJobSet<
       name: jobName,
     })
   create.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
-    JobActions.CREATE,
+    AsyncJobActions.CREATE,
     jobName
   )
 
   const start: CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.START,
+    AsyncJobActions.START,
     JobName,
     StartPayload
   > = (paramsExceptName) =>
@@ -202,10 +206,13 @@ export function createJobSet<
       ...paramsExceptName,
       name: jobName,
     })
-  start.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(JobActions.START, jobName)
+  start.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
+    AsyncJobActions.START,
+    jobName
+  )
 
   const succeed: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.SUCCEED,
+    AsyncJobActions.SUCCEED,
     JobName,
     SucceedPayload
   > = (paramsExceptName) =>
@@ -214,12 +221,12 @@ export function createJobSet<
       name: jobName,
     })
   succeed.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
-    JobActions.SUCCEED,
+    AsyncJobActions.SUCCEED,
     jobName
   )
 
   const fail: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.FAIL,
+    AsyncJobActions.FAIL,
     JobName,
     FailPayload
   > = (paramsExceptName) =>
@@ -227,10 +234,13 @@ export function createJobSet<
       ...paramsExceptName,
       name: jobName,
     })
-  fail.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(JobActions.FAIL, jobName)
+  fail.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
+    AsyncJobActions.FAIL,
+    jobName
+  )
 
   const cancel: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.CANCEL,
+    AsyncJobActions.CANCEL,
     JobName,
     CancelPayload
   > = (paramsExceptName) =>
@@ -239,12 +249,12 @@ export function createJobSet<
       name: jobName,
     })
   cancel.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
-    JobActions.CANCEL,
+    AsyncJobActions.CANCEL,
     jobName
   )
 
   const remove: GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-    JobActions.REMOVE,
+    AsyncJobActions.REMOVE,
     JobName,
     RemovePayload
   > = (paramsExceptName) =>
@@ -253,7 +263,7 @@ export function createJobSet<
       name: jobName,
     })
   remove.__ASYNC_JOBS_TYPE__ = asyncActionTypeCreator(
-    JobActions.REMOVE,
+    AsyncJobActions.REMOVE,
     jobName
   )
   /**

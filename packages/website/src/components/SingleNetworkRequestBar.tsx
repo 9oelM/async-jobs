@@ -10,7 +10,7 @@ function getNetworkRequestBarBgColor(asyncStatus: AsyncStatus) {
   switch (asyncStatus) {
     case AsyncStatus.CREATED:
       return Colors.brown
-    case AsyncStatus.LOADING:
+    case AsyncStatus.PENDING:
       return Colors.brown
     case AsyncStatus.FAILURE:
       return `red`
@@ -34,15 +34,15 @@ export const SingleNetworkRequestBar = enhance<{
   useEffect(() => {
     if (!singleAsyncRequestInfo) return
     if (
-      singleAsyncRequestInfo.status === AsyncStatus.LOADING &&
-      singleAsyncRequestInfo.timestamp[`LOADING`] &&
+      singleAsyncRequestInfo.status === AsyncStatus.PENDING &&
+      singleAsyncRequestInfo.timestamp[`PENDING`] &&
       timeDiffUntilRequestFirstSent === null
     ) {
       setTimeDiffUntilRequestFirstSent(
-        singleAsyncRequestInfo.timestamp[`LOADING`] - firstRequestBeginTime
+        singleAsyncRequestInfo.timestamp[`PENDING`] - firstRequestBeginTime
       )
       console.log(
-        singleAsyncRequestInfo.timestamp[`LOADING`] - firstRequestBeginTime
+        singleAsyncRequestInfo.timestamp[`PENDING`] - firstRequestBeginTime
       )
     }
   }, [singleAsyncRequestInfo?.status, timeDiffUntilRequestFirstSent])

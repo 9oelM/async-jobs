@@ -3,14 +3,14 @@ import {
   asyncActionTypeCreator,
   getAsyncJobsType,
   isSpecificAsyncActionType,
-  JobActions,
+  AsyncJobActions,
   ASYNC_JOBS_PREFIX,
 } from "./asyncTypes"
 
 describe(`asyncActionTypeCreator`, () => {
   it(`produces expected combination of strings`, () => {
-    expect(asyncActionTypeCreator(JobActions.START, `B`)).toEqual(
-      `${ASYNC_JOBS_PREFIX}/${JobActions.START}/B`
+    expect(asyncActionTypeCreator(AsyncJobActions.START, `B`)).toEqual(
+      `${ASYNC_JOBS_PREFIX}/${AsyncJobActions.START}/B`
     )
   })
 })
@@ -19,12 +19,12 @@ describe(`isSpecificAsyncActionType`, () => {
   it.each([
     {
       action: { type: `RANDOM` },
-      jobAction: JobActions.CANCEL,
+      jobAction: AsyncJobActions.CANCEL,
       jobName: `TEST`,
     },
     {
-      action: { payload: { a: 1 }, type: JobActions.REMOVE },
-      jobAction: JobActions.REMOVE,
+      action: { payload: { a: 1 }, type: AsyncJobActions.REMOVE },
+      jobAction: AsyncJobActions.REMOVE,
       jobName: `LOGIN`,
     },
     {
@@ -33,7 +33,7 @@ describe(`isSpecificAsyncActionType`, () => {
         payload: { "11": 1, "22": 3 },
         id: `QQQQQ`,
       }),
-      jobAction: JobActions.FAIL,
+      jobAction: AsyncJobActions.FAIL,
       jobName: `123`,
     },
   ])(
@@ -46,7 +46,7 @@ describe(`isSpecificAsyncActionType`, () => {
   it.each([
     {
       action: createJob({ name: `YOUTUBE_LITE`, payload: { is: `awesome` } }),
-      jobAction: JobActions.CREATE,
+      jobAction: AsyncJobActions.CREATE,
       jobName: `YOUTUBE_LITE`,
     },
     {
@@ -55,7 +55,7 @@ describe(`isSpecificAsyncActionType`, () => {
         payload: { "11": 1, "22": 3 },
         id: `QQQQQ`,
       }),
-      jobAction: JobActions.FAIL,
+      jobAction: AsyncJobActions.FAIL,
       jobName: `1`,
     },
   ])(

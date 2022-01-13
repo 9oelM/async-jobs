@@ -1,15 +1,17 @@
 import {
   CreateOrStartJobActionEagerCreator,
   GeneralJobActionEagerCreator,
-  JobActions,
+  AsyncJobActions,
 } from "./asyncTypes"
 
 export type SpecificErrorDescriptor<Payload = unknown> = <
   JobName extends string,
   Action extends
-    | ReturnType<GeneralJobActionEagerCreator<JobActions, JobName, Payload>>
     | ReturnType<
-        CreateOrStartJobActionEagerCreator<JobActions, JobName, Payload>
+        GeneralJobActionEagerCreator<AsyncJobActions, JobName, Payload>
+      >
+    | ReturnType<
+        CreateOrStartJobActionEagerCreator<AsyncJobActions, JobName, Payload>
       >
 >(
   action: Payload extends undefined

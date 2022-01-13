@@ -10,7 +10,7 @@ export enum AsyncStatus {
    * and the actual async Job has not been started
    */
   CREATED = `CREATED`,
-  LOADING = `LOADING`,
+  PENDING = `PENDING`,
   SUCCESS = `SUCCESS`,
   FAILURE = `FAILURE`,
   CANCELLED = `CANCELLED`,
@@ -38,14 +38,14 @@ export type AsyncMeta<RequestName extends string, Err = Error> = {
    */
   timestamp: {
     [AsyncStatus.CREATED]?: number
-    [AsyncStatus.LOADING]?: number
+    [AsyncStatus.PENDING]?: number
     [AsyncStatus.SUCCESS]?: number
     [AsyncStatus.FAILURE]?: number
     [AsyncStatus.CANCELLED]?: number
   }
 }
 
-export enum JobActions {
+export enum AsyncJobActions {
   CREATE = `CREATE`,
   START = `START`,
   SUCCEED = `SUCCEED`,
@@ -60,12 +60,12 @@ export enum JobActions {
 export const ASYNC_JOBS_PREFIX = `@AJ` as const
 
 export type ActionTypeCreator<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string
 > = `${typeof ASYNC_JOBS_PREFIX}/${JobAction}/${JobName}`
 
 export const asyncActionTypeCreator: <
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string
 >(
   jobAction: JobAction,
@@ -93,7 +93,7 @@ export type AsyncJobReturns<JobName extends string, Payload> =
 /**
  * @description used to create `createJob` and `startJob` actions.
  */
-export type CreateOrStartJobActionCreator<JobAction extends JobActions> = <
+export type CreateOrStartJobActionCreator<JobAction extends AsyncJobActions> = <
   JobName extends string,
   Payload
 >(
@@ -107,7 +107,7 @@ export type CreateOrStartJobActionCreator<JobAction extends JobActions> = <
  * eagerly requires three generic arguments
  */
 export type CreateOrStartJobActionEagerCreator<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string,
   Payload
 > = (params: AsyncJobParams<JobName, Payload>) => AsyncJobReturns<
@@ -121,7 +121,7 @@ export type CreateOrStartJobActionEagerCreator<
  * used to create Job actions for
  * succeed, fail, cancel and remove actions
  */
-export type GeneralJobActionCreator<JobAction extends JobActions> = <
+export type GeneralJobActionCreator<JobAction extends AsyncJobActions> = <
   JobName extends string,
   Payload
 >(
@@ -135,7 +135,7 @@ export type GeneralJobActionCreator<JobAction extends JobActions> = <
  * eagerly requires three generic arguments
  */
 export type GeneralJobActionEagerCreator<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string,
   Payload
 > = (
@@ -145,17 +145,17 @@ export type GeneralJobActionEagerCreator<
 }
 
 /**
- * @description ts-only user defined typeguard
+ * @description checks if an action is a specific type
  * @example
  * ```
  * const action = createJob({ name: `YOUTUBE_LITE`, payload: { is: `awesome` } })
- * if (isSpecificAsyncActionType(action, JobActions.CREATE, `YOUTUBE_LITE`)) {
+ * if (isSpecificAsyncActionType(action, AsyncJobActions.CREATE, `YOUTUBE_LITE`)) {
  *  console.log(action.type === `@RA/CREATE/YOUTUBE_LITE`) // true
  * }
  * ```
  */
 export function isSpecificAsyncActionType<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string,
   Payload
 >(
@@ -172,7 +172,7 @@ export function isSpecificAsyncActionType<
 }
 
 export type CreateOrStartAsyncActionCreatorWithoutNameParameter<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string,
   Payload
 > = (
@@ -195,7 +195,7 @@ export type CreateOrStartAsyncActionCreatorWithoutNameParameter<
 ) => ReturnType<CreateOrStartJobActionEagerCreator<JobAction, JobName, Payload>>
 
 export type GeneralAsyncActionCreatorWithoutNameParameter<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string,
   Payload
 > = (
@@ -218,7 +218,7 @@ export type GeneralAsyncActionCreatorWithoutNameParameter<
 ) => ReturnType<GeneralJobActionEagerCreator<JobAction, JobName, Payload>>
 
 export type WithAsyncJobsType<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string,
   T
 > = T & {
@@ -226,7 +226,7 @@ export type WithAsyncJobsType<
 }
 
 export type GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string,
   Payload
 > = WithAsyncJobsType<
@@ -236,7 +236,7 @@ export type GeneralAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
 >
 
 export type CreateOrStartAsyncActionCreatorWithoutNameParameterAndWithAsyncJobsType<
-  JobAction extends JobActions,
+  JobAction extends AsyncJobActions,
   JobName extends string,
   Payload
 > = WithAsyncJobsType<
@@ -263,7 +263,7 @@ export function getAsyncJobsType<
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         any
       >,
-  JobAction extends JobActions = JobActions,
+  JobAction extends AsyncJobActions = AsyncJobActions,
   JobName extends string = string
 >(
   reduxAsyncActionCreator: ActionCreator
