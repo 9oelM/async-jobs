@@ -1,11 +1,12 @@
 {
   "name": "@async-jobs/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "files": [
-    "build"
+    "build",
+    "src"
   ],
   "scripts": {
     "test": "jest --config ./jest/jest.config.ts",

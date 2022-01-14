@@ -228,9 +228,10 @@ WIP
 
 # Typescript
 
-`async-jobs` fully supports Typescript. Autocompletion will help you get things right.
+`async-jobs` is fully made with an obsession with Typescript. Autocompletion will help you get things right.
 For more, please see full API reference.
 
 # Full API Reference
 
-WIP
+https://async-jobs-api-docs.surge.sh/
+
