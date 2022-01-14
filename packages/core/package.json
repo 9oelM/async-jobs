@@ -13,7 +13,8 @@
     "dev": "tsc --watch --project ./tsconfig.json",
     "tsc": "tsc --project ./tsconfig.json",
     "minify": "bash minify.sh",
-    "package": "npm run tsc && npm run minify",
+    "publish": "npm run tsc && npm run minify && npm publish --access public",
+    "docs:deploy": "surge --project ./docs --domain async-jobs-api-docs.surge.sh",
     "docs:generate": "typedoc src/index.ts",
     "docs:watch": "typedoc --watch src/index.ts"
   },
