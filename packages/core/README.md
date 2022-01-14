@@ -8,6 +8,16 @@ _For the paranoids of async jobs in javascript._
 - Usable for both Redux and non-redux applications.
 - Recipes included.
 
+# Install 
+
+```
+npm i --save @async-jobs/core
+```
+
+```
+yarn add @async-jobs/core
+```
+
 # Demo
 
 https://9oelm.github.io/async-jobs/

@@ -8,9 +8,23 @@ _For the paranoids of async jobs in javascript._
 - Usable for both Redux and non-redux applications.
 - Recipes included.
 
+# Install 
+
+```
+npm i --save @async-jobs/core
+```
+
+```
+yarn add @async-jobs/core
+```
+
 # Demo
 
 https://9oelm.github.io/async-jobs/
+
+# Full API Reference
+
+https://async-jobs-api-docs.surge.sh/
 
 # Usage with Redux
 
@@ -230,8 +244,3 @@ WIP
 
 `async-jobs` is fully made with an obsession with Typescript. Autocompletion will help you get things right.
 For more, please see full API reference.
-
-# Full API Reference
-
-https://async-jobs-api-docs.surge.sh/
-
