@@ -45,60 +45,139 @@ export const store = createStore(rootReducer)
 
 ## The 'Vanilla Redux' way
 
-[See this in the code](https://github.com/9oelm/async-jobs/blob/main/vanilla-redux-example)
+[👉 Run this example on your computer](https://github.com/9oelM/async-jobs/tree/main/packages/vanilla-redux-example)
 
 This is the most fundamental way to use `async-jobs` in a Redux application, although it is not the recommended way. This is not recommended because side effects reside in the component but redux middleware, which means it is almost equivalent to using a local `useState`. But it does the job - it can track the async request and it is stored in redux, accessible from anywhere else too. You get the idea.
 
 ```javascript
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { createJobSet } from '@async-jobs/core'
+import React, { useEffect, useRef } from "react"
+import { useDispatch } from "react-redux"
+import {
+  asyncJobByIdSelector,
+  AsyncStatus,
+  createJobSet,
+} from "@async-jobs/core"
+import { TcResult, tcAsync } from "./utilities/essentials"
+import { useTypedSelector } from "."
 
-const AsyncJobNames = Object.freeze({
-  POST_BOOK_FLIGHT_TICKET: `POST_BOOK_FLIGHT_TICKET`,
-})
+export class API {
+  static baseUrl = `https://example-api-six.vercel.app`
 
-export const postBookFlightTicketJobSet = createJobSet(AsyncJobNames.POST_BOOK_FLIGHT_TICKET)
+  static async bookFlightTicket({
+    timeout_secs = 0,
+    make_error = false,
+  }: {
+    timeout_secs?: number
+    make_error?: boolean
+  }): Promise<TcResult<string, Error>> {
+    return tcAsync(
+      window
+        .fetch(
+          `${API.baseUrl}/api/main?timeout_secs=${timeout_secs}&make_error=${make_error}`
+        )
+        .then((response) => {
+          if (response.ok) {
+            return response.text()
+          } else {
+            throw new Error(`Error happened: ${response.statusText}`)
+          }
+        })
+    )
+  }
+}
 
-const BookFlightPage = ({ destination, username }) => {
-  const bookFlightTicketStartRequest = useRef(postBookFlightTicketJobSet.start({
-    payload: {
-      destination,
-      username,
-    }
-  }))
+enum AsyncJobNames {
+  POST_BOOK_FLIGHT_TICKET = `POST_BOOK_FLIGHT_TICKET`,
+}
+
+export const postBookFlightTicketJobSet = createJobSet<
+  AsyncJobNames.POST_BOOK_FLIGHT_TICKET,
+  {
+    destination: string
+    username: string
+  },
+  {
+    destination: string
+    username: string
+  },
+  string,
+  Error,
+  void
+>(AsyncJobNames.POST_BOOK_FLIGHT_TICKET)
+
+export const BookFlightPage: React.FC<{
+  destination: string
+  username: string
+}> = ({ destination, username }) => {
+  const bookFlightTicketCreatedJob = useRef(
+    postBookFlightTicketJobSet.create({
+      payload: {
+        destination,
+        username,
+      },
+    })
+  )
   const dispatch = useDispatch()
-  const currentAsyncJob = useSelector((s) => asyncJobByIdSelector(s, bookFlightTicketStartRequest.current.id))
-  
+  const currentAsyncJob = useTypedSelector((s) =>
+    asyncJobByIdSelector(s, bookFlightTicketCreatedJob.current.id)
+  )
+
   useEffect(() => {
-    dispatch(bookFlightTicketStartRequest.current)
-    let hasError = false
-    let postBookFlightTicketResult = null
-    try {
-      postBookFlightTicketResult = await API.bookFlightTicket({ method: `POST`, body: bookFlightTicketStartRequest.current.payload })
-    } catch (err) {
-      dispatch(postBookFlightTicketJobSet.fail({ id: bookFlightTicketStartRequest.current.id, payload: err })
-      hasError = Boolean(err)
+    async function bookFlightTicketOnMount() {
+      dispatch(bookFlightTicketCreatedJob.current)
+      await new Promise((resolve) => {
+        setTimeout(resolve, 3000)
+      })
+      dispatch(
+        postBookFlightTicketJobSet.start({
+          id: bookFlightTicketCreatedJob.current.id,
+          payload: bookFlightTicketCreatedJob.current.payload,
+        })
+      )
+      const [err, postBookFlightTicketResult] = await API.bookFlightTicket({
+        timeout_secs: 5,
+        make_error: false,
+      })
+
+      if (!err && postBookFlightTicketResult) {
+        dispatch(
+          postBookFlightTicketJobSet.succeed({
+            id: bookFlightTicketCreatedJob.current.id,
+            payload: postBookFlightTicketResult,
+          })
+        )
+      } else {
+        dispatch(
+          postBookFlightTicketJobSet.fail({
+            id: bookFlightTicketCreatedJob.current.id,
+            payload: err ?? new Error(`unknown error`),
+          })
+        )
+      }
     }
-    if (!hasError) {
-      dispatch(postBookFlightTicketJobSet.succeed({ id: bookFlightTicketStartRequest.current.id, payload: postBookFlightTicketResult }))
-    }
+    bookFlightTicketOnMount()
   }, [])
-  
-  return <div>{(() => {
-    switch (currentAsyncJob.status) {
-      case AsyncJobStatus.PENDING:
-        return <div>Pending</div>
-      case AsyncJobStatus.SUCCESS:
-        return <div>Success</div>
-      case AsyncJobStatus.FAIL:
-        return <div>Failed</div>
-      case AsyncJobStatus.CANCELED:
-        return <div>Canceled</div>
-      default:
-        return <div>Unknown</div>
-    }
-  })()}</div>
+
+  return (
+    <div>
+      {(() => {
+        switch (currentAsyncJob?.status) {
+          case AsyncStatus.CREATED:
+            return <div>Created</div>
+          case AsyncStatus.PENDING:
+            return <div>Pending</div>
+          case AsyncStatus.SUCCESS:
+            return <div>Success</div>
+          case AsyncStatus.FAILURE:
+            return <div>Failed</div>
+          case AsyncStatus.CANCELLED:
+            return <div>Cancelled</div>
+          default:
+            return <div>Unknown</div>
+        }
+      })()}
+    </div>
+  )
 }
 ```
 
