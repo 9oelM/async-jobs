@@ -1,0 +1,1 @@
+Simply run `npm i` and `npm run dev` to see the example

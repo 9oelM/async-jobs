@@ -45,6 +45,8 @@ export const store = createStore(rootReducer)
 
 ## The 'Vanilla Redux' way
 
+[See this in the code](https://github.com/9oelm/async-jobs/blob/main/vanilla-redux-example)
+
 This is the most fundamental way to use `async-jobs` in a Redux application, although it is not the recommended way. This is not recommended because side effects reside in the component but redux middleware, which means it is almost equivalent to using a local `useState`. But it does the job - it can track the async request and it is stored in redux, accessible from anywhere else too. You get the idea.
 
 ```javascript
